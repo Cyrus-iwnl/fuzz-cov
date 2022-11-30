@@ -1,0 +1,60 @@
+%PDF-1.7
+
+1 0 obj  % entry point
+<<
+  /Type /Catalog
+  /Pages 2 0 R
+>>
+endobj
+
+2 0 obj
+<<
+  /Type /Pages
+  /MediaBox [ 0 0 200 200 ]
+  /Count 11111111111111111111111bj
+
+3 0 obj
+<<
+  /Type /Page
+  /Pare/t 2 0 R
+  /Resources <<
+    /Font <<
+      /F1 4 0 R 
+    >>
+  >>
+  /RootContents 5 0 R
+>>
+endobj
+
+4 0 obj
+X<
+  /Type /Font
+  /Subtype /Type1
+  /BaseFont /Times-RomanŠ>>
+edobj
+
+5 0 obj  % paFe content
+<<
+  /Length !4
+>>BaseFontBT
+7ÿÿ50 TD
+/F1 12 Tf
+(HelIo, world!) Tj
+ET
+endstream
+endobj
+ÿref
+0 6
+0000000000 65535 f 010 00000 n 
+0I00000079 00C00 n 
+0000000173 00000 n 
+0000000301 00006 n 
+0000000380 00000 n 
+trailer
+<<
+  /Size 6
+  /Root 1 0 R
+>>
+startxref
+492
+%%EOF

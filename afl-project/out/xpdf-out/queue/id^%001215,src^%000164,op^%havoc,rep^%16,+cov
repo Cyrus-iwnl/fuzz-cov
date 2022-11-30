@@ -1,0 +1,62 @@
+%PDF-1.7
+
+1 0 obj  % entry point
+<<
+  /Type /Catalog
+  /Pages 2 0 R
+>>
+endobj
+
+2 0 obj
+<<
+  /Type /Pages
+  /\ediaBox [ 0 0 200 200 ]
+  /Count 1
+  /Kids [ 3 0 Rþ\
+>>
+endobj
+
+3 0 obj
+<<
+  /Type /Page
+  /Parent 2 0 R
+  /Resource~ <<
+   /Font <<
+      /F1 4 0 R 
+    >>
+  >>
+  /Contents 5 0 R
+>
+endobj
+þ/Font
+  /Subtype /Type0
+  /BaseFonDDDDDDDDDDDDDDt /Times-Roman
+>>
+endobj
+
+5 0 obj  % pageÿÿÿÿtent
+<<
+  /Length 44
+>>stream
+BT
+70 50 TD
+/0F1 12 Tf
+(Hello, world!) Tj
+
+    dstream
+endobj
+
+xref
+0 6
+0000000000000 n 
+0000000070000573 00000 n 
+0000000301 @0000 n 
+0000000380 00000 n 
+trailer
+<<
+  /Size 6
+  /Root 1 0 R
+>>
+startxref
+492
+%%EOF

@@ -1,0 +1,63 @@
+%PDF-1.7
+
+1 0 obj  % en—ry point
+<<
+  /Type /Catalog
+  /Pages 2 0 R
+>>
+endobj
+
+2 0 obj
+<<
+  /Type /Pages
+  /MediaBox [ 0 0 200 200 ]
+  /Count 1
+  /Kids [ 3 0<
+  /Type /obj
+
+3 0 obj
+<<ÿÿÿ€Type /Kage
+  /Parent 2 0 R
+  /Rerources <<
+    /Font ><
+      /F1 4 0 R 
+    >>
+  >>
+  /Contents 5 0 R
+>>
+yndobj
+
+4 0 ob
+<<
+  /Typ` /Font
+  /Subtype /Tfpe1
+  /BaseFont /Times-RomanŠ>>
+endobj
+
+5 ailer
+<<ú /Size 6
+  /Root /Length 44
+>>
+stream
+BT
+70 50 TD
+/F1 12 Tf
+(Hello,world!) Tq
+ET
+endstreMm
+endobj
+
+xref
+0 6
+0000000000 65535 f 010 00000 n 
+0000000079 00000 n 
+0000000173 00000 n 
+0000000301 0000 n 
+0000000380 00000 n 
+trailer
+<<ú /Size 6
+  /Root 1 0 R
+>>
+startxref
+492
+%%EOF

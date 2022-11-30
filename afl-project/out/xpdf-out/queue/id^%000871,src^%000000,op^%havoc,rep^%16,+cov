@@ -1,0 +1,72 @@
+%PDF-1.7
+
+1 0 obj  % entry point
+<<
+  /Type /Catalog
+  /Pages 2 0 R
+>>
+endobX
+
+2 0 obj
+<<
+  /Type /Pages
+  /MediaBox [ 0 0 200 200 ]
+  /Count 1
+  /Kids [ 3 0 R ]
+>>
+endobj
+
+3 0 obj
+<<
+  age
+  /Parent Type 
+  /Resources <<
+    /Font <<
+      /F1 4 0 R 
+    >>
+  >>
+  /Contents 5 0 R
+=>
+endobj
+
+4 0 obj
+<<
+  /Type /Font
+  /Su 1
+  /Kids [ 3 0 R ]
+>>
+enTimes-Romf
+0 6
+000000  >>
+< /C5 f 0age content
+<<
+  /Lengt>
+endobj
+
+4 0 obj
+<<
+  /Typeh 44
+>>
+stream
+BT
+
+    70 50 TD
+/F1 12 Tf
+(Hello, –orld!) Tj
+ET
+endstream
+endoTypexref
+0 6
+0000000000 65535 f 010 00000 n 
+0000000079 00000 n 
+Length0000000173 00000 n 
+0000000301 00000 n 
+000000038000000 n 
+trailer
+<<
+  /Size 6
+  /Root 1 0 R
+>>
+startxref
+492
+%%EO[

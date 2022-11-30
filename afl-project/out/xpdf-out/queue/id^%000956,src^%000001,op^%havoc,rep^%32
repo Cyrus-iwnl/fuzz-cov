@@ -1,0 +1,62 @@
+¥PDF-1.7
+
+1 0 obj  % entry point
+<<
+  /fype /Catalo TD
+/F1 12 TPages 2 0 R
+>.
+enÿÿbj
+
+2<<<<<<<<<<<<<<<<<<<<<<<ype /Pages
+  /MediaBox [ 0 0 200 200!]
+  /Count 1
+  /Kids [ 3 0 R ]
+>>
+e‚
+endobj
+
+xref
+0 6
+0000000000 nj  %
+  /Conÿoin<
+  /Type /Pag8
+  /Parent 2 0 R
+  /Resources<<
+    /Font <<
+      /F1 4 0 R 
+ d  >>
+ Pages /Contents 5 0 R
+>>
+endobj
+
+4 0 obj
+<BaseFont  /Font  /Subtype /Tmes-R×man
+>V
+endobj
+
+5 0 obj  % page content
+Resources th 44
+>>
+stream
+BT
+70 50 TD
+<F1 12 Tf
+(Hello, world!) fj
+ET
+endstreR 
+  dobj
+
+xref
+0 6
+0000000000 6555 f 010 000079 00000 n 0000000173 00000 n 
+0000000301 000¸0 n 
+0000000380 00000 n 
+trailer
+<<
+  /Size 6
+  /Root 1 0 R
+>>
+startxref
+492
+
+      %%EOF

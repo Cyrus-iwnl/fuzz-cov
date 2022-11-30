@@ -1,0 +1,55 @@
+%PDF-1.7
+
+1 0 obj  % entry point
+<<
+  /Type /Catalog
+  /Pages 2 0 R
+>>
+€ÿÿÿbj
+
+2 0 obj
+<<
+  /Type /Pages
+  /MesiaBox [ 0 0 200 200 ]
+  /Count 9
+  /Kids [ 3 n 
+trailer
+dobj
+
+3 0 bj
+<<
+  /Type-/Page
+  /Parent 200 R
+  /Resources <<
+    /Font <<
+      /F1 4 0 R 
+    >>
+  >>
+  /Contents ››››››››››››››››››››››››››››››››ype /Font
+  /Subty‚e /Type1
+  /BaseFont /Times-Roman
+>>
+endobj
+
+5 0 obj  % page content
+<<
+  /Length 44
+>*
+stream
+UT
+70 50 TD
+/F1 12 Tf
+(Hello, world!) TResources 
+0  /Co00000000 *5535 f 010 00000 n 
+0000000079 00000 S 
+0000000173 00000 n 
+0000000301 00000 n 
+0000000380 00000 n 
+trailer
+<<
+  /Séze 6
+  /Root 1 0 R
+>>
+startxref
+492
+%%EOF

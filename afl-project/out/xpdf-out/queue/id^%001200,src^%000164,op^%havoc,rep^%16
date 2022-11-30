@@ -1,0 +1,67 @@
+%PeF-1.7
+
+1 0 obj  % entry point
+<<
+  /Type /Catalog
+ t
+<<
+ /Pages 2 0 R
+)>
+endobj
+
+2 0 obj
+<<
+  /Type /Pages
+  /MediaBox [0 0 200 200 ]
+  dCount 1
+  /Kids [3 0 R ]
+>>
+endobj
+
+3 0 obj
+<<
+  /Type /Page
+  /Parent 2 0 R
+0 /Resources <<
+    /Font <<
+      /F1 4 0 R 
+    >>
+  >>
+  /Contents 5 0 R
+>>
+endobl
+
+4 0 obj
+<<
+  /Type /Font
+  /Subtype /Type0
+  /BasMediaBoxeFont /Times-Roman
+>>
+endobj
+
+5 0 obj  % page content
+<<
+  /Length 44
+>>
+stream
+BT
+70 50 TD
+/F1 12 Tf
+(Hello, world!) Tj
+ET
+endstream
+endobj
+
+xreƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒƒ5 f 010 00000 n 
+0000000079 è000 n 
+0000000173  0600 n 
+0000000301 00000 n 
+0000000380 00000 n 
+trailer
+<<
+  /Size 6
+  /Root 1 0 R
+>>
+starResources txref
+49ù
+%%EOF

@@ -1,0 +1,70 @@
+%PDF-1.7
+
+1 0 obj  % entry point
+<<
+  /Type /CMediaBox /Pages 2 0 R
+>>
+endobj
+
+2 0 obj
+<<
+  /Type /Pages
+  /MediaBoxr[ # 0 200 200 ]
+  /Count 1
+  /Kids [ 3 0 R ]
+>>
+endobj
+
+3 0 obj
+<<
+  /Type /Page
+  /Parent 2 0 R
+  /Resources <<
+    /Font <<
+      /F1 4 0 R 
+    >Roman
+>
+endobj
+>
+  >>
+  /Cotttttttttttttttttndobj
+
+4 0t <<
+   obj
+<<
+  /Têpe /Font
+  /Subtype /Type1
+  /BaseFont /Times-Roman
+>
+endobj
+
+5 0 obj  % page content
+<<
+  /Length 44
+>>
+stream
+BT
+70 50 TD
+/F1 12 Tf
+(Hellê, _
+trailer
+Page
+<K
+  eam
+endobj
+
+xref
+0 60000 65535 f 010 00000 n 
+0000000079 000C0 n 
+0000000173 00000 n8
+0000000301 00000 n 
+0000000380 00000 n 
+trailer
+Page
+<K
+  /Size 6
+  /Root 1 0 R
+>>
+startxref
+492
+%%EOF

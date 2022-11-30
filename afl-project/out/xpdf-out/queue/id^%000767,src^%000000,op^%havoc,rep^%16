@@ -1,0 +1,99 @@
+%PDF-1.7
+
+1 0 t
+<<
+  /Type /Catalog
+  /Pages 2 0 R
+>>
+endobj
+
+2 0 obj
+<<
+  /Tlpe /Pages
+  /MediaBox [ 0 0 200 200 ]
+  /Count 1
+  /Kids [ 3 %PDF-
+>>
+endobj
+
+3 0 obj
+<<
+  /Type /Page
+  /Parent 2 0 R
+  /Resources <<
+    /+ont <<
+      /F1 4 0 R 
+    J>
+  >>
+  /Contents 5 0 R
+>
+      j
+
+4 0 obj
+<<
+  /Type /Font
+  /Subtype /Type1
+  /BaseFont /Times-Roman
+>>
+endobj
+
+5 0 % page content
+<<
+ obj  % p  000 n 
+0000000173 00000 n 
+0
+stream
+BT
+70 50 TD
+/F1 12 Tf
+(Hello, world!) Tj
+ET
+ewdstasream
+endobj
+
+xref
+0 6
+0000000000 65535 f 010 00000 n 
+0000000079 00000 n 
+0000000173 00000 n 
+0000000301 00000 n 
+0000000380 00000 n 
+trailer
+<
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<
+ @/Size 6
+  /Ro‘t 120 R
+>>
+startxref
+492
+%%EOF
