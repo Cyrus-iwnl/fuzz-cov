@@ -1,0 +1,368 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info - elf/nfp.h</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">elf</a> - nfp.h<span style="font-size: 80%;"> (source / <a href="nfp.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">63</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2022-11-28 23:37:18</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* NFP ELF support for BFD.</a>
+<a name="2"><span class="lineNum">       2 </span>            :    Copyright (C) 2017-2022 Free Software Foundation, Inc.</a>
+<a name="3"><span class="lineNum">       3 </span>            :    Contributed by Francois H. Theron &lt;francois.theron@netronome.com&gt;</a>
+<a name="4"><span class="lineNum">       4 </span>            : </a>
+<a name="5"><span class="lineNum">       5 </span>            :    This file is part of BFD, the Binary File Descriptor library.</a>
+<a name="6"><span class="lineNum">       6 </span>            : </a>
+<a name="7"><span class="lineNum">       7 </span>            :    This program is free software; you can redistribute it and/or modify</a>
+<a name="8"><span class="lineNum">       8 </span>            :    it under the terms of the GNU General Public License as published by</a>
+<a name="9"><span class="lineNum">       9 </span>            :    the Free Software Foundation; either version 3 of the License, or</a>
+<a name="10"><span class="lineNum">      10 </span>            :    (at your option) any later version.</a>
+<a name="11"><span class="lineNum">      11 </span>            : </a>
+<a name="12"><span class="lineNum">      12 </span>            :    This program is distributed in the hope that it will be useful,</a>
+<a name="13"><span class="lineNum">      13 </span>            :    but WITHOUT ANY WARRANTY; without even the implied warranty of</a>
+<a name="14"><span class="lineNum">      14 </span>            :    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</a>
+<a name="15"><span class="lineNum">      15 </span>            :    GNU General Public License for more details.</a>
+<a name="16"><span class="lineNum">      16 </span>            : </a>
+<a name="17"><span class="lineNum">      17 </span>            :    You should have received a copy of the GNU General Public License</a>
+<a name="18"><span class="lineNum">      18 </span>            :    along with this program; if not, write to the Free Software Foundation,</a>
+<a name="19"><span class="lineNum">      19 </span>            :    Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */</a>
+<a name="20"><span class="lineNum">      20 </span>            : </a>
+<a name="21"><span class="lineNum">      21 </span>            : #ifndef _ELF_NFP_H</a>
+<a name="22"><span class="lineNum">      22 </span>            : #define _ELF_NFP_H</a>
+<a name="23"><span class="lineNum">      23 </span>            : </a>
+<a name="24"><span class="lineNum">      24 </span>            : #include &quot;bfd.h&quot;</a>
+<a name="25"><span class="lineNum">      25 </span>            : #include &quot;elf/common.h&quot;</a>
+<a name="26"><span class="lineNum">      26 </span>            : #include &quot;elf/reloc-macros.h&quot;</a>
+<a name="27"><span class="lineNum">      27 </span>            : #include &lt;stdint.h&gt;</a>
+<a name="28"><span class="lineNum">      28 </span>            : </a>
+<a name="29"><span class="lineNum">      29 </span>            : #ifdef __cplusplus</a>
+<a name="30"><span class="lineNum">      30 </span>            : extern &quot;C&quot;</a>
+<a name="31"><span class="lineNum">      31 </span>            : {</a>
+<a name="32"><span class="lineNum">      32 </span>            : #endif</a>
+<a name="33"><span class="lineNum">      33 </span>            : </a>
+<a name="34"><span class="lineNum">      34 </span>            : #define ET_NFP_PARTIAL_REL (ET_LOPROC + ET_REL)</a>
+<a name="35"><span class="lineNum">      35 </span>            : #define ET_NFP_PARTIAL_EXEC (ET_LOPROC + ET_EXEC)</a>
+<a name="36"><span class="lineNum">      36 </span>            : </a>
+<a name="37"><span class="lineNum">      37 </span>            : /* NFP e_flags - chip family</a>
+<a name="38"><span class="lineNum">      38 </span>            :    Valid values for FAMILY are:</a>
+<a name="39"><span class="lineNum">      39 </span>            :    0x3200 - NFP-32xx</a>
+<a name="40"><span class="lineNum">      40 </span>            :    0x6000 - NFP-6xxx/NFP-4xxx.  */</a>
+<a name="41"><span class="lineNum">      41 </span>            : #define EF_NFP_MACH(ef_nfp)        (((ef_nfp) &gt;&gt; 8) &amp; 0xFFFF)</a>
+<a name="42"><span class="lineNum">      42 </span>            : #define EF_NFP_SET_MACH(nfp_fam)   (((nfp_fam) &amp; 0xFFFF) &lt;&lt; 8)</a>
+<a name="43"><span class="lineNum">      43 </span>            : </a>
+<a name="44"><span class="lineNum">      44 </span>            : #define E_NFP_MACH_3200 0x3200</a>
+<a name="45"><span class="lineNum">      45 </span>            : #define E_NFP_MACH_6000 0x6000</a>
+<a name="46"><span class="lineNum">      46 </span>            : </a>
+<a name="47"><span class="lineNum">      47 </span>            : #define NFP_3200_CPPTGT_MSF0     1</a>
+<a name="48"><span class="lineNum">      48 </span>            : #define NFP_3200_CPPTGT_QDR      2</a>
+<a name="49"><span class="lineNum">      49 </span>            : #define NFP_3200_CPPTGT_MSF1     3</a>
+<a name="50"><span class="lineNum">      50 </span>            : #define NFP_3200_CPPTGT_HASH     4</a>
+<a name="51"><span class="lineNum">      51 </span>            : #define NFP_3200_CPPTGT_MU       7</a>
+<a name="52"><span class="lineNum">      52 </span>            : #define NFP_3200_CPPTGT_GS       8</a>
+<a name="53"><span class="lineNum">      53 </span>            : #define NFP_3200_CPPTGT_PCIE     9</a>
+<a name="54"><span class="lineNum">      54 </span>            : #define NFP_3200_CPPTGT_ARM     10</a>
+<a name="55"><span class="lineNum">      55 </span>            : #define NFP_3200_CPPTGT_CRYPTO  12</a>
+<a name="56"><span class="lineNum">      56 </span>            : #define NFP_3200_CPPTGT_CAP     13</a>
+<a name="57"><span class="lineNum">      57 </span>            : #define NFP_3200_CPPTGT_CT      14</a>
+<a name="58"><span class="lineNum">      58 </span>            : #define NFP_3200_CPPTGT_CLS     15</a>
+<a name="59"><span class="lineNum">      59 </span>            : </a>
+<a name="60"><span class="lineNum">      60 </span>            : #define NFP_6000_CPPTGT_NBI      1</a>
+<a name="61"><span class="lineNum">      61 </span>            : #define NFP_6000_CPPTGT_VQDR     2</a>
+<a name="62"><span class="lineNum">      62 </span>            : #define NFP_6000_CPPTGT_ILA      6</a>
+<a name="63"><span class="lineNum">      63 </span>            : #define NFP_6000_CPPTGT_MU       7</a>
+<a name="64"><span class="lineNum">      64 </span>            : #define NFP_6000_CPPTGT_PCIE     9</a>
+<a name="65"><span class="lineNum">      65 </span>            : #define NFP_6000_CPPTGT_ARM     10</a>
+<a name="66"><span class="lineNum">      66 </span>            : #define NFP_6000_CPPTGT_CRYPTO  12</a>
+<a name="67"><span class="lineNum">      67 </span>            : #define NFP_6000_CPPTGT_CTXPB   14</a>
+<a name="68"><span class="lineNum">      68 </span>            : #define NFP_6000_CPPTGT_CLS     15</a>
+<a name="69"><span class="lineNum">      69 </span>            : </a>
+<a name="70"><span class="lineNum">      70 </span>            : /* NFP Section types</a>
+<a name="71"><span class="lineNum">      71 </span>            :    MECONFIG - NFP-32xx only, ME CSR configurations</a>
+<a name="72"><span class="lineNum">      72 </span>            :    INITREG - A generic register initialisation section (chip or ME CSRs/GPRs)</a>
+<a name="73"><span class="lineNum">      73 </span>            :    UDEBUG - Legacy-style debug data section.  */</a>
+<a name="74"><span class="lineNum">      74 </span>            : #define SHT_NFP_MECONFIG        (SHT_LOPROC + 1)</a>
+<a name="75"><span class="lineNum">      75 </span>            : #define SHT_NFP_INITREG         (SHT_LOPROC + 2)</a>
+<a name="76"><span class="lineNum">      76 </span>            : #define SHT_NFP_UDEBUG          SHT_LOUSER</a>
+<a name="77"><span class="lineNum">      77 </span>            : </a>
+<a name="78"><span class="lineNum">      78 </span>            : /* NFP SECTION flags</a>
+<a name="79"><span class="lineNum">      79 </span>            :      ELF-64 sh_flags is 64-bit, but there is no info on what the upper 32 bits</a>
+<a name="80"><span class="lineNum">      80 </span>            :      are expected to be used for, it is not marked reserved either.</a>
+<a name="81"><span class="lineNum">      81 </span>            :      We'll use them for NFP-specific flags since we don't use ELF-32.</a>
+<a name="82"><span class="lineNum">      82 </span>            : </a>
+<a name="83"><span class="lineNum">      83 </span>            :    INIT - Sections that are loaded and executed before the final text</a>
+<a name="84"><span class="lineNum">      84 </span>            :           microcode.  Non-code INIT sections are loaded first, then other</a>
+<a name="85"><span class="lineNum">      85 </span>            :           memory secions, then INIT2 sections, then INIT-code sections.</a>
+<a name="86"><span class="lineNum">      86 </span>            :    INIT2 - Sections that are loaded before INIT-code sections, used for</a>
+<a name="87"><span class="lineNum">      87 </span>            :            transient configuration before executing INIT-code section</a>
+<a name="88"><span class="lineNum">      88 </span>            :            microcode.</a>
+<a name="89"><span class="lineNum">      89 </span>            :    SCS - The number of additional ME codestores being shared with the group's</a>
+<a name="90"><span class="lineNum">      90 </span>            :          base ME of the section, e.g. 0 for no SCS, 1 for dual and 3 for</a>
+<a name="91"><span class="lineNum">      91 </span>            :          quad.  If this is 0 it is possible that stagger-style SCS codestore</a>
+<a name="92"><span class="lineNum">      92 </span>            :          sections are being used.  For stagger-style each section is simply</a>
+<a name="93"><span class="lineNum">      93 </span>            :          loaded directly to the ME it is assigned to.  If these flags are</a>
+<a name="94"><span class="lineNum">      94 </span>            :          used, virtual address space loading will be used - one large section</a>
+<a name="95"><span class="lineNum">      95 </span>            :          loaded to the group's base ME will be packed across shared MEs by</a>
+<a name="96"><span class="lineNum">      96 </span>            :          hardware.  This is not available on all ME versions.</a>
+<a name="97"><span class="lineNum">      97 </span>            : </a>
+<a name="98"><span class="lineNum">      98 </span>            :     NFP_ELF_SHF_GET_SCS (val) returns the number of additional codestores</a>
+<a name="99"><span class="lineNum">      99 </span>            :     being shared with the group's base ME, e.g. 0 for no SCS,</a>
+<a name="100"><span class="lineNum">     100 </span>            :     1 for dual SCS, 3 for quad SCS.  */</a>
+<a name="101"><span class="lineNum">     101 </span>            : </a>
+<a name="102"><span class="lineNum">     102 </span>            : #define SHF_NFP_INIT            0x80000000</a>
+<a name="103"><span class="lineNum">     103 </span>            : #define SHF_NFP_INIT2           0x40000000</a>
+<a name="104"><span class="lineNum">     104 </span>            : #define SHF_NFP_SCS(shf)        (((shf) &gt;&gt; 32) &amp; 0xFF)</a>
+<a name="105"><span class="lineNum">     105 </span>            : #define SHF_NFP_SET_SCS(v)      ((uint64_t) ((v) &amp; 0xFF) &lt;&lt; 32)</a>
+<a name="106"><span class="lineNum">     106 </span>            : </a>
+<a name="107"><span class="lineNum">     107 </span>            : /* NFP Section Info</a>
+<a name="108"><span class="lineNum">     108 </span>            :    For PROGBITS and NOBITS sections:</a>
+<a name="109"><span class="lineNum">     109 </span>            :      MEMTYPE - the memory type</a>
+<a name="110"><span class="lineNum">     110 </span>            :      DOMAIN - The island ID and ME number where the data will be loaded.</a>
+<a name="111"><span class="lineNum">     111 </span>            :               For NFP-32xx, this is an island number or linear ME number.</a>
+<a name="112"><span class="lineNum">     112 </span>            :               For NFP-6xxx, DOMAIN&lt;15:8&gt; == island ID, DOMAIN&lt;7:0&gt; is 0 based</a>
+<a name="113"><span class="lineNum">     113 </span>            :               ME number (if applicable).</a>
+<a name="114"><span class="lineNum">     114 </span>            :    For INITREG sections:</a>
+<a name="115"><span class="lineNum">     115 </span>            :      ISLAND - island ID (if it's a ME target, ME numbers are in the</a>
+<a name="116"><span class="lineNum">     116 </span>            :               section data)</a>
+<a name="117"><span class="lineNum">     117 </span>            :      CPPTGT - CPP Target ID</a>
+<a name="118"><span class="lineNum">     118 </span>            :      CPPACTRD - CPP Read Action</a>
+<a name="119"><span class="lineNum">     119 </span>            :      CPPTOKRD - CPP Read Token</a>
+<a name="120"><span class="lineNum">     120 </span>            :      CPPACTWR - CPP Write Action</a>
+<a name="121"><span class="lineNum">     121 </span>            :      CPPTOKWR - CPP Write Token</a>
+<a name="122"><span class="lineNum">     122 </span>            :      ORDER - Controls the order in which the loader processes sections with</a>
+<a name="123"><span class="lineNum">     123 </span>            :              the same info fields.  */</a>
+<a name="124"><span class="lineNum">     124 </span>            : </a>
+<a name="125"><span class="lineNum">     125 </span>            : #define SHI_NFP_DOMAIN(shi)             (((shi) &gt;&gt; 16) &amp; 0xFFFF)</a>
+<a name="126"><span class="lineNum">     126 </span>            : #define SHI_NFP_MEMTYPE(shi)            ( (shi) &amp; 0xFFFF)</a>
+<a name="127"><span class="lineNum">     127 </span>            : #define SHI_NFP_SET_DOMAIN(v)           (((v) &amp; 0xFFFF) &lt;&lt; 16)</a>
+<a name="128"><span class="lineNum">     128 </span>            : #define SHI_NFP_SET_MEMTYPE(v)          ( (v) &amp; 0xFFFF)</a>
+<a name="129"><span class="lineNum">     129 </span>            : </a>
+<a name="130"><span class="lineNum">     130 </span>            : #define SHI_NFP_IREG_ISLAND(shi)        (((shi) &gt;&gt; 26) &amp; 0x3F)</a>
+<a name="131"><span class="lineNum">     131 </span>            : #define SHI_NFP_IREG_CPPTGT(shi)        (((shi) &gt;&gt; 22) &amp;  0xF)</a>
+<a name="132"><span class="lineNum">     132 </span>            : #define SHI_NFP_IREG_CPPACTRD(shi)      (((shi) &gt;&gt; 17) &amp; 0x1F)</a>
+<a name="133"><span class="lineNum">     133 </span>            : #define SHI_NFP_IREG_CPPTOKRD(shi)      (((shi) &gt;&gt; 15) &amp;  0x3)</a>
+<a name="134"><span class="lineNum">     134 </span>            : #define SHI_NFP_IREG_CPPACTWR(shi)      (((shi) &gt;&gt; 10) &amp; 0x1F)</a>
+<a name="135"><span class="lineNum">     135 </span>            : #define SHI_NFP_IREG_CPPTOKWR(shi)      (((shi) &gt;&gt; 8)  &amp;  0x3)</a>
+<a name="136"><span class="lineNum">     136 </span>            : #define SHI_NFP_IREG_ORDER(shi)         ( (shi) &amp; 0xFF)</a>
+<a name="137"><span class="lineNum">     137 </span>            : #define SHI_NFP_SET_IREG_ISLAND(v)      (((v) &amp; 0x3F) &lt;&lt; 26)</a>
+<a name="138"><span class="lineNum">     138 </span>            : #define SHI_NFP_SET_IREG_CPPTGT(v)      (((v) &amp;  0xF) &lt;&lt; 22)</a>
+<a name="139"><span class="lineNum">     139 </span>            : #define SHI_NFP_SET_IREG_CPPACTRD(v)    (((v) &amp; 0x1F) &lt;&lt; 17)</a>
+<a name="140"><span class="lineNum">     140 </span>            : #define SHI_NFP_SET_IREG_CPPTOKRD(v)    (((v) &amp;  0x3) &lt;&lt; 15)</a>
+<a name="141"><span class="lineNum">     141 </span>            : #define SHI_NFP_SET_IREG_CPPACTWR(v)    (((v) &amp; 0x1F) &lt;&lt; 10)</a>
+<a name="142"><span class="lineNum">     142 </span>            : #define SHI_NFP_SET_IREG_CPPTOKWR(v)    (((v) &amp;  0x3) &lt;&lt; 8)</a>
+<a name="143"><span class="lineNum">     143 </span>            : #define SHI_NFP_SET_IREG_ORDER(v)       ( (v) &amp; 0xFF)</a>
+<a name="144"><span class="lineNum">     144 </span>            : </a>
+<a name="145"><span class="lineNum">     145 </span>            : /* CtXpb/reflect_read_sig_init/reflect_write_sig_init</a>
+<a name="146"><span class="lineNum">     146 </span>            :    identifies Init-CSR sections for ME CSRs.  */</a>
+<a name="147"><span class="lineNum">     147 </span>            : #define SHI_NFP_6000_IS_IREG_MECSR(shi) ( \</a>
+<a name="148"><span class="lineNum">     148 </span>            :   SHI_NFP_IREG_CPPTGT (shi) == NFP_6000_CPPTGT_CTXPB \</a>
+<a name="149"><span class="lineNum">     149 </span>            :   &amp;&amp; SHI_NFP_IREG_CPPACTRD (shi) == 2 \</a>
+<a name="150"><span class="lineNum">     150 </span>            :   &amp;&amp; SHI_NFP_IREG_CPPTOKRD (shi) == 1 \</a>
+<a name="151"><span class="lineNum">     151 </span>            :   &amp;&amp; SHI_NFP_IREG_CPPACTWR (shi) == 3 \</a>
+<a name="152"><span class="lineNum">     152 </span>            :   &amp;&amp; SHI_NFP_IREG_CPPTOKWR (shi) == 1 \</a>
+<a name="153"><span class="lineNum">     153 </span>            : )</a>
+<a name="154"><span class="lineNum">     154 </span>            : </a>
+<a name="155"><span class="lineNum">     155 </span>            : /* Transient INITREG sections will be validated against the target</a>
+<a name="156"><span class="lineNum">     156 </span>            :    but will not be kept - validate, write or read and discard.</a>
+<a name="157"><span class="lineNum">     157 </span>            :    They will still be handled last (in order).  */</a>
+<a name="158"><span class="lineNum">     158 </span>            : #define SHI_NFP_IREG_ORDER_TRANSIENT    0xFF</a>
+<a name="159"><span class="lineNum">     159 </span>            : </a>
+<a name="160"><span class="lineNum">     160 </span>            : /* Below are some extra macros to translate SHI fields in more specific</a>
+<a name="161"><span class="lineNum">     161 </span>            :    contexts.</a>
+<a name="162"><span class="lineNum">     162 </span>            : </a>
+<a name="163"><span class="lineNum">     163 </span>            :    For NFP-32xx, DOMAIN is set to a global linear ME number (0 to 39).</a>
+<a name="164"><span class="lineNum">     164 </span>            :    An NFP-32xx has 8 MEs per island and up to 5 islands.  */</a>
+<a name="165"><span class="lineNum">     165 </span>            : </a>
+<a name="166"><span class="lineNum">     166 </span>            : #define SHI_NFP_3200_ISLAND(shi)        ((SHI_NFP_DOMAIN (shi) &gt;&gt; 3) &amp; 0x7)</a>
+<a name="167"><span class="lineNum">     167 </span>            : #define SHI_NFP_3200_MENUM(shi)         ( SHI_NFP_DOMAIN (shi)       &amp; 0x7)</a>
+<a name="168"><span class="lineNum">     168 </span>            : #define SHI_NFP_SET_3200_ISLAND(v)      SHI_NFP_SET_DOMAIN (((v) &amp; 0x7) &lt;&lt; 3)</a>
+<a name="169"><span class="lineNum">     169 </span>            : #define SHI_NFP_SET_3200_MENUM(v)       SHI_NFP_SET_DOMAIN ( (v) &amp; 0x7)</a>
+<a name="170"><span class="lineNum">     170 </span>            : </a>
+<a name="171"><span class="lineNum">     171 </span>            : #define SHI_NFP_ISLAND(shi)             ((SHI_NFP_DOMAIN (shi) &gt;&gt; 8) &amp; 0xFF)</a>
+<a name="172"><span class="lineNum">     172 </span>            : #define SHI_NFP_MENUM(shi)              ( SHI_NFP_DOMAIN (shi)       &amp; 0xFF)</a>
+<a name="173"><span class="lineNum">     173 </span>            : #define SHI_NFP_SET_ISLAND(shi)         SHI_NFP_SET_DOMAIN (((shi) &amp; 0xFF) &lt;&lt; 8)</a>
+<a name="174"><span class="lineNum">     174 </span>            : #define SHI_NFP_SET_MENUM(shi)          SHI_NFP_SET_DOMAIN ( (shi) &amp; 0xFF)</a>
+<a name="175"><span class="lineNum">     175 </span>            : </a>
+<a name="176"><span class="lineNum">     176 </span>            : #define SHI_NFP_MEMTYPE_NONE            0</a>
+<a name="177"><span class="lineNum">     177 </span>            : #define SHI_NFP_MEMTYPE_USTORE          1</a>
+<a name="178"><span class="lineNum">     178 </span>            : #define SHI_NFP_MEMTYPE_LMEM            2</a>
+<a name="179"><span class="lineNum">     179 </span>            : #define SHI_NFP_MEMTYPE_CLS             3</a>
+<a name="180"><span class="lineNum">     180 </span>            : #define SHI_NFP_MEMTYPE_DRAM            4</a>
+<a name="181"><span class="lineNum">     181 </span>            : #define SHI_NFP_MEMTYPE_MU              4</a>
+<a name="182"><span class="lineNum">     182 </span>            : #define SHI_NFP_MEMTYPE_SRAM            5</a>
+<a name="183"><span class="lineNum">     183 </span>            : #define SHI_NFP_MEMTYPE_GS              6</a>
+<a name="184"><span class="lineNum">     184 </span>            : #define SHI_NFP_MEMTYPE_PPC_LMEM        7</a>
+<a name="185"><span class="lineNum">     185 </span>            : #define SHI_NFP_MEMTYPE_PPC_SMEM        8</a>
+<a name="186"><span class="lineNum">     186 </span>            : #define SHI_NFP_MEMTYPE_EMU_CACHE       9</a>
+<a name="187"><span class="lineNum">     187 </span>            : </a>
+<a name="188"><span class="lineNum">     188 </span>            : /* VTP_FORCE is for use by the NFP Linker+Loader only.  */</a>
+<a name="189"><span class="lineNum">     189 </span>            : #define NFP_IREG_VTP_FORCE              0</a>
+<a name="190"><span class="lineNum">     190 </span>            : #define NFP_IREG_VTP_CONST              1</a>
+<a name="191"><span class="lineNum">     191 </span>            : #define NFP_IREG_VTP_REQUIRED           2</a>
+<a name="192"><span class="lineNum">     192 </span>            : #define NFP_IREG_VTP_VOLATILE_INIT      3</a>
+<a name="193"><span class="lineNum">     193 </span>            : #define NFP_IREG_VTP_VOLATILE_NOINIT    4</a>
+<a name="194"><span class="lineNum">     194 </span>            : #define NFP_IREG_VTP_INVALID            5</a>
+<a name="195"><span class="lineNum">     195 </span>            : </a>
+<a name="196"><span class="lineNum">     196 </span>            : /* Init-CSR entry w0 fields:</a>
+<a name="197"><span class="lineNum">     197 </span>            :    NLW - Not Last Word</a>
+<a name="198"><span class="lineNum">     198 </span>            :    CTX - ME context number (if applicable)</a>
+<a name="199"><span class="lineNum">     199 </span>            :    VTP - Value type</a>
+<a name="200"><span class="lineNum">     200 </span>            :    COH - CPP Offset High 8 bits.  */</a>
+<a name="201"><span class="lineNum">     201 </span>            : #define NFP_IREG_ENTRY_WO_NLW(w0) (((w0) &gt;&gt; 31) &amp; 0x1)</a>
+<a name="202"><span class="lineNum">     202 </span>            : #define NFP_IREG_ENTRY_WO_CTX(w0) (((w0) &gt;&gt; 28) &amp; 0x7)</a>
+<a name="203"><span class="lineNum">     203 </span>            : #define NFP_IREG_ENTRY_WO_VTP(w0) (((w0) &gt;&gt; 25) &amp; 0x7)</a>
+<a name="204"><span class="lineNum">     204 </span>            : #define NFP_IREG_ENTRY_WO_COH(w0) (((w0) &gt;&gt; 0) &amp; 0xFF)</a>
+<a name="205"><span class="lineNum">     205 </span>            : </a>
+<a name="206"><span class="lineNum">     206 </span>            : typedef struct</a>
+<a name="207"><span class="lineNum">     207 </span>            : {</a>
+<a name="208"><span class="lineNum">     208 </span>            :   uint32_t w0;</a>
+<a name="209"><span class="lineNum">     209 </span>            :   uint32_t cpp_offset_lo;</a>
+<a name="210"><span class="lineNum">     210 </span>            :   uint32_t val;</a>
+<a name="211"><span class="lineNum">     211 </span>            :   uint32_t mask;</a>
+<a name="212"><span class="lineNum">     212 </span>            : } Elf_Nfp_InitRegEntry;</a>
+<a name="213"><span class="lineNum">     213 </span>            : </a>
+<a name="214"><span class="lineNum">     214 </span>            : typedef struct</a>
+<a name="215"><span class="lineNum">     215 </span>            : {</a>
+<a name="216"><span class="lineNum">     216 </span>            :   uint32_t ctx_enables;</a>
+<a name="217"><span class="lineNum">     217 </span>            :   uint32_t entry;</a>
+<a name="218"><span class="lineNum">     218 </span>            :   uint32_t misc_control;</a>
+<a name="219"><span class="lineNum">     219 </span>            :   uint32_t reserved;</a>
+<a name="220"><span class="lineNum">     220 </span>            : } Elf_Nfp_MeConfig;</a>
+<a name="221"><span class="lineNum">     221 </span>            : </a>
+<a name="222"><span class="lineNum">     222 </span>            : /* Relocations.  */</a>
+<a name="223"><span class="lineNum">     223 </span><span class="lineNoCov">          0 : START_RELOC_NUMBERS (elf_nfp3200_reloc_type)</span></a>
+<a name="224"><span class="lineNum">     224 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_NOTYPE, 0)</span></a>
+<a name="225"><span class="lineNum">     225 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_W32LE, 1)</span></a>
+<a name="226"><span class="lineNum">     226 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_SRC8_A, 2)</span></a>
+<a name="227"><span class="lineNum">     227 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_SRC8_B, 3)</span></a>
+<a name="228"><span class="lineNum">     228 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_IMMED8_I, 4)</span></a>
+<a name="229"><span class="lineNum">     229 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_SC, 5)</span></a>
+<a name="230"><span class="lineNum">     230 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_IMMED_LO16_I_A, 6)</span></a>
+<a name="231"><span class="lineNum">     231 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_IMMED_LO16_I_B, 7)</span></a>
+<a name="232"><span class="lineNum">     232 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_SRC7_B, 8)</span></a>
+<a name="233"><span class="lineNum">     233 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_SRC7_A, 9)</span></a>
+<a name="234"><span class="lineNum">     234 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_SRC8_I_B, 10)</span></a>
+<a name="235"><span class="lineNum">     235 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_SRC8_I_A, 11)</span></a>
+<a name="236"><span class="lineNum">     236 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_IMMED_HI16_I_A, 12)</span></a>
+<a name="237"><span class="lineNum">     237 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_IMMED_HI16_I_B, 13)</span></a>
+<a name="238"><span class="lineNum">     238 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_RSVD_0, 14)</span></a>
+<a name="239"><span class="lineNum">     239 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_RSVD_1, 15)</span></a>
+<a name="240"><span class="lineNum">     240 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_RSVD_2, 16)</span></a>
+<a name="241"><span class="lineNum">     241 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_RSVD_3, 17)</span></a>
+<a name="242"><span class="lineNum">     242 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_RSVD_4, 18)</span></a>
+<a name="243"><span class="lineNum">     243 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_RSVD_5, 19)</span></a>
+<a name="244"><span class="lineNum">     244 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_RSVD_6, 20)</span></a>
+<a name="245"><span class="lineNum">     245 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_W64LE, 21)</span></a>
+<a name="246"><span class="lineNum">     246 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_W32BE, 22)</span></a>
+<a name="247"><span class="lineNum">     247 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_W64BE, 23)</span></a>
+<a name="248"><span class="lineNum">     248 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_W32LE_AND, 24)</span></a>
+<a name="249"><span class="lineNum">     249 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_W32BE_AND, 25)</span></a>
+<a name="250"><span class="lineNum">     250 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_W32LE_OR, 26)</span></a>
+<a name="251"><span class="lineNum">     251 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_W32BE_OR, 27)</span></a>
+<a name="252"><span class="lineNum">     252 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_W64LE_AND, 28)</span></a>
+<a name="253"><span class="lineNum">     253 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_W64BE_AND, 29)</span></a>
+<a name="254"><span class="lineNum">     254 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_W64LE_OR, 30)</span></a>
+<a name="255"><span class="lineNum">     255 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP3200_W64BE_OR, 31)</span></a>
+<a name="256"><span class="lineNum">     256 </span><span class="lineNoCov">          0 : END_RELOC_NUMBERS (R_NFP3200_MAX)</span></a>
+<a name="257"><span class="lineNum">     257 </span>            : </a>
+<a name="258"><span class="lineNum">     258 </span><span class="lineNoCov">          0 : START_RELOC_NUMBERS (elf_nfp_reloc_type)</span></a>
+<a name="259"><span class="lineNum">     259 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_NOTYPE, 0)</span></a>
+<a name="260"><span class="lineNum">     260 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_W32LE, 1)</span></a>
+<a name="261"><span class="lineNum">     261 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_SRC8_A, 2)</span></a>
+<a name="262"><span class="lineNum">     262 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_SRC8_B, 3)</span></a>
+<a name="263"><span class="lineNum">     263 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_IMMED8_I, 4)</span></a>
+<a name="264"><span class="lineNum">     264 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_SC, 5)</span></a>
+<a name="265"><span class="lineNum">     265 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_IMMED_LO16_I_A, 6)</span></a>
+<a name="266"><span class="lineNum">     266 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_IMMED_LO16_I_B, 7)</span></a>
+<a name="267"><span class="lineNum">     267 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_SRC7_B, 8)</span></a>
+<a name="268"><span class="lineNum">     268 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_SRC7_A, 9)</span></a>
+<a name="269"><span class="lineNum">     269 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_SRC8_I_B, 10)</span></a>
+<a name="270"><span class="lineNum">     270 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_SRC8_I_A, 11)</span></a>
+<a name="271"><span class="lineNum">     271 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_IMMED_HI16_I_A, 12)</span></a>
+<a name="272"><span class="lineNum">     272 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_IMMED_HI16_I_B, 13)</span></a>
+<a name="273"><span class="lineNum">     273 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_W64LE, 14)</span></a>
+<a name="274"><span class="lineNum">     274 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_SH_INFO, 15)</span></a>
+<a name="275"><span class="lineNum">     275 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_W32BE, 16)</span></a>
+<a name="276"><span class="lineNum">     276 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_W64BE, 17)</span></a>
+<a name="277"><span class="lineNum">     277 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_W32_29_24, 18)</span></a>
+<a name="278"><span class="lineNum">     278 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_W32LE_AND, 19)</span></a>
+<a name="279"><span class="lineNum">     279 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_W32BE_AND, 20)</span></a>
+<a name="280"><span class="lineNum">     280 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_W32LE_OR, 21)</span></a>
+<a name="281"><span class="lineNum">     281 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_W32BE_OR, 22)</span></a>
+<a name="282"><span class="lineNum">     282 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_W64LE_AND, 23)</span></a>
+<a name="283"><span class="lineNum">     283 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_W64BE_AND, 24)</span></a>
+<a name="284"><span class="lineNum">     284 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_W64LE_OR, 25)</span></a>
+<a name="285"><span class="lineNum">     285 </span><span class="lineNoCov">          0 :     RELOC_NUMBER (R_NFP_W64BE_OR, 26)</span></a>
+<a name="286"><span class="lineNum">     286 </span><span class="lineNoCov">          0 : END_RELOC_NUMBERS (R_NFP_MAX)</span></a>
+<a name="287"><span class="lineNum">     287 </span>            : </a>
+<a name="288"><span class="lineNum">     288 </span>            : #ifdef __cplusplus</a>
+<a name="289"><span class="lineNum">     289 </span>            : }</a>
+<a name="290"><span class="lineNum">     290 </span>            : #endif</a>
+<a name="291"><span class="lineNum">     291 </span>            : </a>
+<a name="292"><span class="lineNum">     292 </span>            : #endif /* _ELF_NFP_H */</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
