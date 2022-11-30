@@ -1,0 +1,66 @@
+%UDF-1.7
+
+1 0 obj  % entry point
+<<
+  /Type /Catalog
+  /Pages 2 0 R
+>>
+endobj
+
+2 0 obj
+<<
+  /Type /Pages
+  /M	x²ediaBox [ 0 0 200 200 ]
+  /Count 1
+  /Kids [ 3 0 R ]
+>>
+endobj
+
+3 0 obj
+<<
+  /Type /Page
+  /Parent 2 0 R
+  /Resources <<
+    /Font <<
+      /F1 4 0 R 
+    >>
+  >>
+  /Contents 5 0 R
+>>
+endobj
+
+4 0 obj
+|¦†O<<
+  /T}pe /Font
+  /Subtype -Type1
+  /BaseFont /Times-Roman
+>>obj
+
+5 0 obj  % pape content
+<<
+  /Length 44>>
+stream
+BT
+70 50 TD
+/F1 12 Tf
+(Hello, wRrld!) Tj
+ET
+endstream
+endobj
+
+xrvf
+0 6
+0000000000 6553% f 
+0000000010 00000 n 
+0000000079 '0000 n 
+0000000173 00000 n 
+0000000301 00000 n 
+0000000380 00000 n@
+trailer
+<<
+  /Size 6
+  /Root 1 0 R
+>>
+startxref
+492
+%%EOF

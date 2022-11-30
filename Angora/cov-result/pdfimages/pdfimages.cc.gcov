@@ -1,0 +1,159 @@
+        -:    0:Source:pdfimages.cc
+        -:    0:Graph:pdfimages.gcno
+        -:    0:Data:pdfimages.gcda
+        -:    0:Runs:13736
+        -:    1://========================================================================
+        -:    2://
+        -:    3:// pdfimages.cc
+        -:    4://
+        -:    5:// Copyright 1998-2003 Glyph & Cog, LLC
+        -:    6://
+        -:    7://========================================================================
+        -:    8:
+        -:    9:#include <aconf.h>
+        -:   10:#include <stdio.h>
+        -:   11:#include <stdlib.h>
+        -:   12:#include <stddef.h>
+        -:   13:#include <string.h>
+        -:   14:#include "parseargs.h"
+        -:   15:#include "GString.h"
+        -:   16:#include "gmem.h"
+        -:   17:#include "GlobalParams.h"
+        -:   18:#include "Object.h"
+        -:   19:#include "Stream.h"
+        -:   20:#include "Array.h"
+        -:   21:#include "Dict.h"
+        -:   22:#include "XRef.h"
+        -:   23:#include "Catalog.h"
+        -:   24:#include "Page.h"
+        -:   25:#include "PDFDoc.h"
+        -:   26:#include "ImageOutputDev.h"
+        -:   27:#include "Error.h"
+        -:   28:#include "config.h"
+        -:   29:
+        -:   30:static int firstPage = 1;
+        -:   31:static int lastPage = 0;
+        -:   32:static GBool dumpJPEG = gFalse;
+        -:   33:static char ownerPassword[33] = "\001";
+        -:   34:static char userPassword[33] = "\001";
+        -:   35:static GBool quiet = gFalse;
+        -:   36:static char cfgFileName[256] = "";
+        -:   37:static GBool printVersion = gFalse;
+        -:   38:static GBool printHelp = gFalse;
+        -:   39:
+        -:   40:static ArgDesc argDesc[] = {
+        -:   41:  {"-f",      argInt,      &firstPage,     0,
+        -:   42:   "first page to convert"},
+        -:   43:  {"-l",      argInt,      &lastPage,      0,
+        -:   44:   "last page to convert"},
+        -:   45:  {"-j",      argFlag,     &dumpJPEG,      0,
+        -:   46:   "write JPEG images as JPEG files"},
+        -:   47:  {"-opw",    argString,   ownerPassword,  sizeof(ownerPassword),
+        -:   48:   "owner password (for encrypted files)"},
+        -:   49:  {"-upw",    argString,   userPassword,   sizeof(userPassword),
+        -:   50:   "user password (for encrypted files)"},
+        -:   51:  {"-q",      argFlag,     &quiet,         0,
+        -:   52:   "don't print any messages or errors"},
+        -:   53:  {"-cfg",        argString,      cfgFileName,    sizeof(cfgFileName),
+        -:   54:   "configuration file to use in place of .xpdfrc"},
+        -:   55:  {"-v",      argFlag,     &printVersion,  0,
+        -:   56:   "print copyright and version info"},
+        -:   57:  {"-h",      argFlag,     &printHelp,     0,
+        -:   58:   "print usage information"},
+        -:   59:  {"-help",   argFlag,     &printHelp,     0,
+        -:   60:   "print usage information"},
+        -:   61:  {"--help",  argFlag,     &printHelp,     0,
+        -:   62:   "print usage information"},
+        -:   63:  {"-?",      argFlag,     &printHelp,     0,
+        -:   64:   "print usage information"},
+        -:   65:  {NULL}
+        -:   66:};
+        -:   67:
+    13736:   68:int main(int argc, char *argv[]) {
+        -:   69:  PDFDoc *doc;
+        -:   70:  GString *fileName;
+        -:   71:  char *imgRoot;
+        -:   72:  GString *ownerPW, *userPW;
+        -:   73:  ImageOutputDev *imgOut;
+        -:   74:  GBool ok;
+        -:   75:  int exitCode;
+        -:   76:
+    13736:   77:  exitCode = 99;
+        -:   78:
+        -:   79:  // parse args
+    13736:   80:  ok = parseArgs(argDesc, &argc, argv);
+    13736:   81:  if (!ok || argc != 3 || printVersion || printHelp) {
+    #####:   82:    fprintf(stderr, "pdfimages version %s\n", xpdfVersion);
+    #####:   83:    fprintf(stderr, "%s\n", xpdfCopyright);
+    #####:   84:    if (!printVersion) {
+    #####:   85:      printUsage("pdfimages", "<PDF-file> <image-root>", argDesc);
+        -:   86:    }
+    #####:   87:    goto err0;
+        -:   88:  }
+    13736:   89:  fileName = new GString(argv[1]);
+    13736:   90:  imgRoot = argv[2];
+        -:   91:
+        -:   92:  // read config file
+    13736:   93:  globalParams = new GlobalParams(cfgFileName);
+    13736:   94:  if (quiet) {
+    #####:   95:    globalParams->setErrQuiet(quiet);
+        -:   96:  }
+        -:   97:
+        -:   98:  // open PDF file
+    13736:   99:  if (ownerPassword[0] != '\001') {
+    #####:  100:    ownerPW = new GString(ownerPassword);
+        -:  101:  } else {
+    13736:  102:    ownerPW = NULL;
+        -:  103:  }
+    13736:  104:  if (userPassword[0] != '\001') {
+    #####:  105:    userPW = new GString(userPassword);
+        -:  106:  } else {
+    13736:  107:    userPW = NULL;
+        -:  108:  }
+    13736:  109:  doc = new PDFDoc(fileName, ownerPW, userPW);
+    13735:  110:  if (userPW) {
+    #####:  111:    delete userPW;
+        -:  112:  }
+    13735:  113:  if (ownerPW) {
+    #####:  114:    delete ownerPW;
+        -:  115:  }
+    13735:  116:  if (!doc->isOk()) {
+     8821:  117:    exitCode = 1;
+     8821:  118:    goto err1;
+        -:  119:  }
+        -:  120:
+        -:  121:  // check for copy permission
+     4914:  122:  if (!doc->okToCopy()) {
+    #####:  123:    error(-1, "Copying of images from this document is not allowed.");
+    #####:  124:    exitCode = 3;
+    #####:  125:    goto err1;
+        -:  126:  }
+        -:  127:
+        -:  128:  // get page range
+     4914:  129:  if (firstPage < 1)
+    #####:  130:    firstPage = 1;
+    4914*:  131:  if (lastPage < 1 || lastPage > doc->getNumPages())
+     4914:  132:    lastPage = doc->getNumPages();
+        -:  133:
+        -:  134:  // write image files
+     4914:  135:  imgOut = new ImageOutputDev(imgRoot, dumpJPEG);
+     4914:  136:  if (imgOut->isOk()) {
+     4914:  137:    doc->displayPages(imgOut, firstPage, lastPage, 72, 72, 0,
+        -:  138:		      gFalse, gTrue, gFalse);
+        -:  139:  }
+     4914:  140:  delete imgOut;
+        -:  141:
+     4914:  142:  exitCode = 0;
+        -:  143:
+        -:  144:  // clean up
+    13735:  145: err1:
+    13735:  146:  delete doc;
+    13735:  147:  delete globalParams;
+    #####:  148: err0:
+        -:  149:
+        -:  150:  // check for memory leaks
+    13735:  151:  Object::memCheck(stderr);
+        -:  152:  gMemReport(stderr);
+        -:  153:
+    13735:  154:  return exitCode;
+        -:  155:}

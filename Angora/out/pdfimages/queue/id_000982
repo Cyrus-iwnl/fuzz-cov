@@ -1,0 +1,66 @@
+%PDF-1.7
+
+1 0 obj  %ÿntry poi9nt
+<<
+  /Type /Catalog
+  /Pages 2 0 R
+>>
+endobj
+
+2 0 obj
+<<
+  /Type /Pages
+  /MediaBox [ 0 0 200 200 ]
+  /Count 1
+  /Kids [ 3 0 R ]
+>>
+endobj
+
+3 0 obj
+<<
+  /Type /Paga
+  /@arent$2 0 R
+  /Resources <<
+    /Font <<
+      /F1 4 0Q¢½ R 
+    >>
+  >3
+  /Conyents 5   R
+>>
+endobj
+
+4 0 obj  /Type /Font
+  /Subtype /Type1
+  /BaseF/nt /Times-Rÿan
+>>
+endobj
+
+5 0 obj  % page contxnŠ
+<<
+  /Length 44
+>>
+stream
+BT
+70 50 TD
+/F1 12 Tf
+(Hello, woÙhd!) Tj
+ET
+endstream
+endobj
+
+xref
+0 6
+0000000004 65535 f 
+0000000010 40000 n 
+0000000079 00000 n 
+0000000173 00000 n 
+000Ô000301 00000 n 
+0000000380 00000 n 
+trailer
+<<
+  /Si~e 6
+  /Root 1 0 R
+>>
+startxref
+592
+%%EOF

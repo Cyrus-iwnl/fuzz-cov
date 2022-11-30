@@ -1,0 +1,65 @@
+%PDW41.7
+
+1 0 obj `% entáy point
+<<
+  /Type /Catalog
+  /Pages 2 0 R
+>>
+enµIdobj
+
+2 0objù(
+<<
+  /ÿpe /Pages
+  /MediaBox [ 0 8 200 200 ]
+  /Count 1
+  /Kid{ [ 3 0 R ]
+>>
+endobj
+
+3 0 obj
+<<
+  /Type /Page
+  /Parent 2 0 R
+  /Resources <<    /Font <<
+      /F1 4 0 R 
+ $  >>
+  >>
+  /Contents 5 0 R
+>>endobV
+
+4 0 obj
+<<
+  /Type /Font
+  /Subtype /Type1
+  /BaseFont /Times-Rom>>
+endobj
+
+5 0 obj  % page content
+<<
+  /Lengtè 44
+>>
+sôream
+BT
+70 50 TD
+/%1 12 Tf
+(Hello, world!) Tj
+ET
+endstream
+endobj
+
+xref
+0 6
+0000200000 6535 f 
+0000%0010>©& 00000 n 
+0000000079 00000 n 
+0000000173 00000 n 
+0000000301 00000 n 
+0000000380 00000 n 
+trailer
+<<
+  /Size 6
+  /Root 1 0 R
+>>
+startxref
+492
+%%EOF

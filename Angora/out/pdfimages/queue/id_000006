@@ -1,0 +1,43 @@
+%PDF-1.7
+
+1 0 obj  % entry point
+<<
+  /Type /Catalog
+  /Pages 2 0 R
+>>
+endobj
+
+2 0 obj
+<<
+  /Type /Pages
+  /MediaBox [ 0 0 200 200 ]
+  /Count 1
+  /Kids [ 3 0 R ]
+>>
+endobj
+
+3 0 obj
+<<
+  /Type /Page
+  /Parent 2 0 R
+  /Resources <<
+    /Font <<
+      /F1 4 0 R 
+    >>
+  >>
+  /Contents 5 0 R
+>>
+endobj
+
+4 0 obj
+<<
+  /Type /Font
+  /Subtype /Type1
+  /BaseFont /Times-Roman
+>>
+endobj
+
+5 0 obj  % page content
+<<
+  /Length 44
+>>¢Ç¬ºæ	¾‚ÆŞ]ÏSÖ†Æj	H8Ü¹Uçİˆ˜GoÖÅ1ò>©£!Üìñã_ş|)ÕA¦²>'}©—³v ´ıñ¸‰"Ï‰üÜÊíÆ3"ÁkáKÍ3iŸ-ßî^™U€:fS”şğQ–D˜ºâÀdy/ìiG2|Ì4‘Ìà¹İê)äüD	ÒÕí]ëı ÔjK’R2 b`ÕÂ5UHºŸkmÜm[Ò‚ó•J•­±›i’a¦Ø·¿­'’„½H†.>gÊvğKú BÂ«‹†ë¶×w¦Iò·œÃå¡7¹HÛØ˜Å€ô|­t#\qæ†˜3¼³å

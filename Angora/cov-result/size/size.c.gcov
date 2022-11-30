@@ -1,0 +1,666 @@
+        -:    0:Source:size.c
+        -:    0:Graph:size.gcno
+        -:    0:Data:size.gcda
+        -:    0:Runs:3
+        -:    1:/* size.c -- report size of various sections of an executable file.
+        -:    2:   Copyright (C) 1991-2022 Free Software Foundation, Inc.
+        -:    3:
+        -:    4:   This file is part of GNU Binutils.
+        -:    5:
+        -:    6:   This program is free software; you can redistribute it and/or modify
+        -:    7:   it under the terms of the GNU General Public License as published by
+        -:    8:   the Free Software Foundation; either version 3 of the License, or
+        -:    9:   (at your option) any later version.
+        -:   10:
+        -:   11:   This program is distributed in the hope that it will be useful,
+        -:   12:   but WITHOUT ANY WARRANTY; without even the implied warranty of
+        -:   13:   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        -:   14:   GNU General Public License for more details.
+        -:   15:
+        -:   16:   You should have received a copy of the GNU General Public License
+        -:   17:   along with this program; if not, write to the Free Software
+        -:   18:   Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston,
+        -:   19:   MA 02110-1301, USA.  */
+        -:   20:
+        -:   21:/* Extensions/incompatibilities:
+        -:   22:   o - BSD output has filenames at the end.
+        -:   23:   o - BSD output can appear in different radicies.
+        -:   24:   o - SysV output has less redundant whitespace.  Filename comes at end.
+        -:   25:   o - SysV output doesn't show VMA which is always the same as the PMA.
+        -:   26:   o - We also handle core files.
+        -:   27:   o - We also handle archives.
+        -:   28:   If you write shell scripts which manipulate this info then you may be
+        -:   29:   out of luck; there's no --compatibility or --pedantic option.  */
+        -:   30:
+        -:   31:#include "sysdep.h"
+        -:   32:#include "bfd.h"
+        -:   33:#include "libiberty.h"
+        -:   34:#include "getopt.h"
+        -:   35:#include "bucomm.h"
+        -:   36:
+        -:   37:#ifndef BSD_DEFAULT
+        -:   38:#define BSD_DEFAULT 1
+        -:   39:#endif
+        -:   40:
+        -:   41:/* Program options.  */
+        -:   42:
+        -:   43:static enum
+        -:   44:  {
+        -:   45:    decimal, octal, hex
+        -:   46:  }
+        -:   47:radix = decimal;
+        -:   48:
+        -:   49:/* Select the desired output format.  */
+        -:   50:enum output_format
+        -:   51:  {
+        -:   52:   FORMAT_BERKLEY,
+        -:   53:   FORMAT_SYSV,
+        -:   54:   FORMAT_GNU
+        -:   55:  };
+        -:   56:static enum output_format selected_output_format =
+        -:   57:#if BSD_DEFAULT
+        -:   58:  FORMAT_BERKLEY
+        -:   59:#else
+        -:   60:  FORMAT_SYSV
+        -:   61:#endif
+        -:   62:  ;
+        -:   63:
+        -:   64:static int show_version = 0;
+        -:   65:static int show_help = 0;
+        -:   66:static int show_totals = 0;
+        -:   67:static int show_common = 0;
+        -:   68:
+        -:   69:static bfd_size_type common_size;
+        -:   70:static bfd_size_type total_bsssize;
+        -:   71:static bfd_size_type total_datasize;
+        -:   72:static bfd_size_type total_textsize;
+        -:   73:
+        -:   74:/* Program exit status.  */
+        -:   75:static int return_code = 0;
+        -:   76:
+        -:   77:static char *target = NULL;
+        -:   78:
+        -:   79:/* Forward declarations.  */
+        -:   80:
+        -:   81:static void display_file (char *);
+        -:   82:static void rprint_number (int, bfd_size_type);
+        -:   83:static void print_sizes (bfd * file);
+        -:   84:
+        -:   85:static void
+        2:   86:usage (FILE *stream, int status)
+        -:   87:{
+        2:   88:  fprintf (stream, _("Usage: %s [option(s)] [file(s)]\n"), program_name);
+        2:   89:  fprintf (stream, _(" Displays the sizes of sections inside binary files\n"));
+        2:   90:  fprintf (stream, _(" If no input file(s) are specified, a.out is assumed\n"));
+        2:   91:  fprintf (stream, _(" The options are:\n\
+        -:   92:  -A|-B|-G  --format={sysv|berkeley|gnu}  Select output style (default is %s)\n\
+        -:   93:  -o|-d|-x  --radix={8|10|16}         Display numbers in octal, decimal or hex\n\
+        -:   94:  -t        --totals                  Display the total sizes (Berkeley only)\n\
+        -:   95:            --common                  Display total size for *COM* syms\n\
+        -:   96:            --target=<bfdname>        Set the binary file format\n\
+        -:   97:            @<file>                   Read options from <file>\n\
+        -:   98:  -h        --help                    Display this information\n\
+        -:   99:  -v        --version                 Display the program's version\n\
+        -:  100:\n"),
+        -:  101:#if BSD_DEFAULT
+        -:  102:  "berkeley"
+        -:  103:#else
+        -:  104:  "sysv"
+        -:  105:#endif
+        -:  106:);
+        2:  107:  list_supported_targets (program_name, stream);
+        2:  108:  if (REPORT_BUGS_TO[0] && status == 0)
+    #####:  109:    fprintf (stream, _("Report bugs to %s\n"), REPORT_BUGS_TO);
+        2:  110:  exit (status);
+        -:  111:}
+        -:  112:
+        -:  113:#define OPTION_FORMAT (200)
+        -:  114:#define OPTION_RADIX (OPTION_FORMAT + 1)
+        -:  115:#define OPTION_TARGET (OPTION_RADIX + 1)
+        -:  116:
+        -:  117:static struct option long_options[] =
+        -:  118:{
+        -:  119:  {"common", no_argument, &show_common, 1},
+        -:  120:  {"format", required_argument, 0, OPTION_FORMAT},
+        -:  121:  {"radix", required_argument, 0, OPTION_RADIX},
+        -:  122:  {"target", required_argument, 0, OPTION_TARGET},
+        -:  123:  {"totals", no_argument, &show_totals, 1},
+        -:  124:  {"version", no_argument, &show_version, 1},
+        -:  125:  {"help", no_argument, &show_help, 1},
+        -:  126:  {0, no_argument, 0, 0}
+        -:  127:};
+        -:  128:
+        -:  129:int main (int, char **);
+        -:  130:
+        -:  131:int
+        3:  132:main (int argc, char **argv)
+        -:  133:{
+        -:  134:  int temp;
+        -:  135:  int c;
+        -:  136:
+        -:  137:#ifdef HAVE_LC_MESSAGES
+        3:  138:  setlocale (LC_MESSAGES, "");
+        -:  139:#endif
+        3:  140:  setlocale (LC_CTYPE, "");
+        3:  141:  bindtextdomain (PACKAGE, LOCALEDIR);
+        3:  142:  textdomain (PACKAGE);
+        -:  143:
+        3:  144:  program_name = *argv;
+        3:  145:  xmalloc_set_program_name (program_name);
+        3:  146:  bfd_set_error_program_name (program_name);
+        -:  147:
+        3:  148:  expandargv (&argc, &argv);
+        -:  149:
+        3:  150:  if (bfd_init () != BFD_INIT_MAGIC)
+    #####:  151:    fatal (_("fatal error: libbfd ABI mismatch"));
+        3:  152:  set_default_bfd_target ();
+        -:  153:
+        6:  154:  while ((c = getopt_long (argc, argv, "ABGHhVvdfotx", long_options,
+        -:  155:			   (int *) 0)) != EOF)
+        2:  156:    switch (c)
+        -:  157:      {
+    #####:  158:      case OPTION_FORMAT:
+    #####:  159:	switch (*optarg)
+        -:  160:	  {
+    #####:  161:	  case 'B':
+        -:  162:	  case 'b':
+    #####:  163:	    selected_output_format = FORMAT_BERKLEY;
+    #####:  164:	    break;
+    #####:  165:	  case 'S':
+        -:  166:	  case 's':
+    #####:  167:	    selected_output_format = FORMAT_SYSV;
+    #####:  168:	    break;
+    #####:  169:	  case 'G':
+        -:  170:	  case 'g':
+    #####:  171:	    selected_output_format = FORMAT_GNU;
+    #####:  172:	    break;
+    #####:  173:	  default:
+    #####:  174:	    non_fatal (_("invalid argument to --format: %s"), optarg);
+    #####:  175:	    usage (stderr, 1);
+        -:  176:	  }
+    #####:  177:	break;
+        -:  178:
+    #####:  179:      case OPTION_TARGET:
+    #####:  180:	target = optarg;
+    #####:  181:	break;
+        -:  182:
+    #####:  183:      case OPTION_RADIX:
+        -:  184:#ifdef ANSI_LIBRARIES
+        -:  185:	temp = strtol (optarg, NULL, 10);
+        -:  186:#else
+    #####:  187:	temp = atol (optarg);
+        -:  188:#endif
+        -:  189:	switch (temp)
+        -:  190:	  {
+    #####:  191:	  case 10:
+    #####:  192:	    radix = decimal;
+    #####:  193:	    break;
+    #####:  194:	  case 8:
+    #####:  195:	    radix = octal;
+    #####:  196:	    break;
+    #####:  197:	  case 16:
+    #####:  198:	    radix = hex;
+    #####:  199:	    break;
+    #####:  200:	  default:
+    #####:  201:	    non_fatal (_("Invalid radix: %s\n"), optarg);
+    #####:  202:	    usage (stderr, 1);
+        -:  203:	  }
+    #####:  204:	break;
+        -:  205:
+    #####:  206:      case 'A':
+    #####:  207:	selected_output_format = FORMAT_SYSV;
+    #####:  208:	break;
+    #####:  209:      case 'B':
+    #####:  210:	selected_output_format = FORMAT_BERKLEY;
+    #####:  211:	break;
+    #####:  212:      case 'G':
+    #####:  213:	selected_output_format = FORMAT_GNU;
+    #####:  214:	break;
+    #####:  215:      case 'v':
+        -:  216:      case 'V':
+    #####:  217:	show_version = 1;
+    #####:  218:	break;
+    #####:  219:      case 'd':
+    #####:  220:	radix = decimal;
+    #####:  221:	break;
+    #####:  222:      case 'x':
+    #####:  223:	radix = hex;
+    #####:  224:	break;
+    #####:  225:      case 'o':
+    #####:  226:	radix = octal;
+    #####:  227:	break;
+    #####:  228:      case 't':
+    #####:  229:	show_totals = 1;
+    #####:  230:	break;
+    #####:  231:      case 'f': /* FIXME : For sysv68, `-f' means `full format', i.e.
+        -:  232:		   `[fname:] M(.text) + N(.data) + O(.bss) + P(.comment) = Q'
+        -:  233:		   where `fname: ' appears only if there are >= 2 input files,
+        -:  234:		   and M, N, O, P, Q are expressed in decimal by default,
+        -:  235:		   hexa or octal if requested by `-x' or `-o'.
+        -:  236:		   Just to make things interesting, Solaris also accepts -f,
+        -:  237:		   which prints out the size of each allocatable section, the
+        -:  238:		   name of the section, and the total of the section sizes.  */
+        -:  239:		/* For the moment, accept `-f' silently, and ignore it.  */
+    #####:  240:	break;
+    #####:  241:      case 0:
+    #####:  242:	break;
+        2:  243:      case 'h':
+        -:  244:      case 'H':
+        -:  245:      case '?':
+        2:  246:	usage (stderr, 1);
+        -:  247:      }
+        -:  248:
+        4:  249:  if (show_version)
+    #####:  250:    print_version ("size");
+        1:  251:  if (show_help)
+    #####:  252:    usage (stdout, 0);
+        -:  253:
+        1:  254:  if (optind == argc)
+    #####:  255:    display_file ("a.out");
+        -:  256:  else
+     5229:  257:    for (; optind < argc;)
+     5228:  258:      display_file (argv[optind++]);
+        -:  259:
+       1*:  260:  if (show_totals && (selected_output_format == FORMAT_BERKLEY
+    #####:  261:		      || selected_output_format == FORMAT_GNU))
+        -:  262:    {
+    #####:  263:      bfd_size_type total = total_textsize + total_datasize + total_bsssize;
+    #####:  264:      int col_width = (selected_output_format == FORMAT_BERKLEY) ? 7 : 10;
+    #####:  265:      char sep_char = (selected_output_format == FORMAT_BERKLEY) ? '\t' : ' ';
+        -:  266:
+    #####:  267:      rprint_number (col_width, total_textsize);
+    #####:  268:      putchar(sep_char);
+    #####:  269:      rprint_number (col_width, total_datasize);
+    #####:  270:      putchar(sep_char);
+    #####:  271:      rprint_number (col_width, total_bsssize);
+    #####:  272:      putchar(sep_char);
+    #####:  273:      if (selected_output_format == FORMAT_BERKLEY)
+    #####:  274:	printf (((radix == octal) ? "%7lo\t%7lx" : "%7lu\t%7lx"),
+        -:  275:		(unsigned long) total, (unsigned long) total);
+        -:  276:      else
+    #####:  277:	rprint_number (col_width, total);
+    #####:  278:      putchar(sep_char);
+    #####:  279:      fputs ("(TOTALS)\n", stdout);
+        -:  280:    }
+        -:  281:
+        1:  282:  return return_code;
+        -:  283:}
+        -:  284:
+        -:  285:/* Total size required for common symbols in ABFD.  */
+        -:  286:
+        -:  287:static void
+    #####:  288:calculate_common_size (bfd *abfd)
+        -:  289:{
+    #####:  290:  asymbol **syms = NULL;
+        -:  291:  long storage, symcount;
+        -:  292:
+    #####:  293:  common_size = 0;
+    #####:  294:  if ((bfd_get_file_flags (abfd) & (EXEC_P | DYNAMIC | HAS_SYMS)) != HAS_SYMS)
+    #####:  295:    return;
+        -:  296:
+    #####:  297:  storage = bfd_get_symtab_upper_bound (abfd);
+    #####:  298:  if (storage < 0)
+    #####:  299:    bfd_fatal (bfd_get_filename (abfd));
+    #####:  300:  if (storage)
+    #####:  301:    syms = (asymbol **) xmalloc (storage);
+        -:  302:
+    #####:  303:  symcount = bfd_canonicalize_symtab (abfd, syms);
+    #####:  304:  if (symcount < 0)
+    #####:  305:    bfd_fatal (bfd_get_filename (abfd));
+        -:  306:
+    #####:  307:  while (--symcount >= 0)
+        -:  308:    {
+    #####:  309:      asymbol *sym = syms[symcount];
+        -:  310:
+    #####:  311:      if (bfd_is_com_section (sym->section)
+    #####:  312:	  && (sym->flags & BSF_SECTION_SYM) == 0)
+    #####:  313:	common_size += sym->value;
+        -:  314:    }
+    #####:  315:  free (syms);
+        -:  316:}
+        -:  317:
+        -:  318:/* Display stats on file or archive member ABFD.  */
+        -:  319:
+        -:  320:static void
+     5228:  321:display_bfd (bfd *abfd)
+        -:  322:{
+        -:  323:  char **matching;
+        -:  324:
+     5228:  325:  if (bfd_check_format (abfd, bfd_archive))
+        -:  326:    /* An archive within an archive.  */
+    1370*:  327:    return;
+        -:  328:
+     5228:  329:  if (bfd_check_format_matches (abfd, bfd_object, &matching))
+        -:  330:    {
+      928:  331:      print_sizes (abfd);
+      928:  332:      printf ("\n");
+      928:  333:      return;
+        -:  334:    }
+        -:  335:
+     4300:  336:  if (bfd_get_error () == bfd_error_file_ambiguously_recognized)
+        -:  337:    {
+    #####:  338:      bfd_nonfatal (bfd_get_filename (abfd));
+    #####:  339:      list_matching_formats (matching);
+    #####:  340:      return_code = 3;
+    #####:  341:      return;
+        -:  342:    }
+        -:  343:
+     4300:  344:  if (bfd_check_format_matches (abfd, bfd_core, &matching))
+        -:  345:    {
+        -:  346:      const char *core_cmd;
+        -:  347:
+      442:  348:      print_sizes (abfd);
+      442:  349:      fputs (" (core file", stdout);
+        -:  350:
+      442:  351:      core_cmd = bfd_core_file_failing_command (abfd);
+      442:  352:      if (core_cmd)
+    #####:  353:	printf (" invoked as %s", core_cmd);
+        -:  354:
+      442:  355:      puts (")\n");
+      442:  356:      return;
+        -:  357:    }
+        -:  358:
+     3858:  359:  bfd_nonfatal (bfd_get_filename (abfd));
+        -:  360:
+     3858:  361:  if (bfd_get_error () == bfd_error_file_ambiguously_recognized)
+    #####:  362:    list_matching_formats (matching);
+        -:  363:
+     3858:  364:  return_code = 3;
+        -:  365:}
+        -:  366:
+        -:  367:static void
+    #####:  368:display_archive (bfd *file)
+        -:  369:{
+    #####:  370:  bfd *arfile = (bfd *) NULL;
+    #####:  371:  bfd *last_arfile = (bfd *) NULL;
+        -:  372:
+        -:  373:  for (;;)
+        -:  374:    {
+    #####:  375:      bfd_set_error (bfd_error_no_error);
+        -:  376:
+    #####:  377:      arfile = bfd_openr_next_archived_file (file, arfile);
+    #####:  378:      if (arfile == NULL)
+        -:  379:	{
+    #####:  380:	  if (bfd_get_error () != bfd_error_no_more_archived_files)
+        -:  381:	    {
+    #####:  382:	      bfd_nonfatal (bfd_get_filename (file));
+    #####:  383:	      return_code = 2;
+        -:  384:	    }
+    #####:  385:	  break;
+        -:  386:	}
+        -:  387:
+    #####:  388:      display_bfd (arfile);
+        -:  389:
+    #####:  390:      if (last_arfile != NULL)
+        -:  391:	{
+    #####:  392:	  bfd_close (last_arfile);
+        -:  393:
+        -:  394:	  /* PR 17512: file: a244edbc.  */
+    #####:  395:	  if (last_arfile == arfile)
+    #####:  396:	    return;
+        -:  397:	}
+        -:  398:
+    #####:  399:      last_arfile = arfile;
+        -:  400:    }
+        -:  401:
+    #####:  402:  if (last_arfile != NULL)
+    #####:  403:    bfd_close (last_arfile);
+        -:  404:}
+        -:  405:
+        -:  406:static void
+     5228:  407:display_file (char *filename)
+        -:  408:{
+        -:  409:  bfd *file;
+        -:  410:
+     5228:  411:  if (get_file_size (filename) < 1)
+        -:  412:    {
+    #####:  413:      return_code = 1;
+    #####:  414:      return;
+        -:  415:    }
+        -:  416:
+     5228:  417:  file = bfd_openr (filename, target);
+     5228:  418:  if (file == NULL)
+        -:  419:    {
+    #####:  420:      bfd_nonfatal (filename);
+    #####:  421:      return_code = 1;
+    #####:  422:      return;
+        -:  423:    }
+        -:  424:
+     5228:  425:  if (bfd_check_format (file, bfd_archive))
+    #####:  426:    display_archive (file);
+        -:  427:  else
+     5228:  428:    display_bfd (file);
+        -:  429:
+     5228:  430:  if (!bfd_close (file))
+        -:  431:    {
+    #####:  432:      bfd_nonfatal (filename);
+    #####:  433:      return_code = 1;
+    #####:  434:      return;
+        -:  435:    }
+        -:  436:}
+        -:  437:
+        -:  438:static int
+    #####:  439:size_number (bfd_size_type num)
+        -:  440:{
+        -:  441:  char buffer[40];
+        -:  442:
+    #####:  443:  sprintf (buffer,
+    #####:  444:	   (radix == decimal ? "%" BFD_VMA_FMT "u" :
+    #####:  445:	   ((radix == octal) ? "0%" BFD_VMA_FMT "o" : "0x%" BFD_VMA_FMT "x")),
+        -:  446:	   num);
+        -:  447:
+    #####:  448:  return strlen (buffer);
+        -:  449:}
+        -:  450:
+        -:  451:static void
+     4110:  452:rprint_number (int width, bfd_size_type num)
+        -:  453:{
+        -:  454:  char buffer[40];
+        -:  455:
+    4110*:  456:  sprintf (buffer,
+    4110*:  457:	   (radix == decimal ? "%" BFD_VMA_FMT "u" :
+    #####:  458:	   ((radix == octal) ? "0%" BFD_VMA_FMT "o" : "0x%" BFD_VMA_FMT "x")),
+        -:  459:	   num);
+        -:  460:
+     4110:  461:  printf ("%*s", width, buffer);
+     4110:  462:}
+        -:  463:
+        -:  464:static bfd_size_type bsssize;
+        -:  465:static bfd_size_type datasize;
+        -:  466:static bfd_size_type textsize;
+        -:  467:
+        -:  468:static void
+     3677:  469:berkeley_or_gnu_sum (bfd *abfd ATTRIBUTE_UNUSED, sec_ptr sec,
+        -:  470:		     void *ignore ATTRIBUTE_UNUSED)
+        -:  471:{
+        -:  472:  flagword flags;
+        -:  473:  bfd_size_type size;
+        -:  474:
+     3677:  475:  flags = bfd_section_flags (sec);
+     3677:  476:  if ((flags & SEC_ALLOC) == 0)
+     1692:  477:    return;
+        -:  478:
+     1985:  479:  size = bfd_section_size (sec);
+     1985:  480:  if ((flags & SEC_CODE) != 0
+      922:  481:      || (selected_output_format == FORMAT_BERKLEY
+      922:  482:	  && (flags & SEC_READONLY) != 0))
+     1260:  483:    textsize += size;
+      725:  484:  else if ((flags & SEC_HAS_CONTENTS) != 0)
+      720:  485:    datasize += size;
+        -:  486:  else
+        5:  487:    bsssize += size;
+        -:  488:}
+        -:  489:
+        -:  490:static void
+     1370:  491:print_berkeley_or_gnu_format (bfd *abfd)
+        -:  492:{
+        -:  493:  static int files_seen = 0;
+        -:  494:  bfd_size_type total;
+    1370*:  495:  int col_width = (selected_output_format == FORMAT_BERKLEY) ? 7 : 10;
+    1370*:  496:  char sep_char = (selected_output_format == FORMAT_BERKLEY) ? '\t' : ' ';
+        -:  497:
+     1370:  498:  bsssize = 0;
+     1370:  499:  datasize = 0;
+     1370:  500:  textsize = 0;
+        -:  501:
+     1370:  502:  bfd_map_over_sections (abfd, berkeley_or_gnu_sum, NULL);
+        -:  503:
+     1370:  504:  bsssize += common_size;
+     1370:  505:  if (files_seen++ == 0)
+        -:  506:    {
+        1:  507:      if (selected_output_format == FORMAT_BERKLEY)
+       1*:  508:	puts ((radix == octal) ? "   text\t   data\t    bss\t    oct\t    hex\tfilename" :
+        -:  509:	      "   text\t   data\t    bss\t    dec\t    hex\tfilename");
+        -:  510:      else
+    #####:  511:	puts ("      text       data        bss      total filename");
+        -:  512:    }
+        -:  513:
+     1370:  514:  total = textsize + datasize + bsssize;
+        -:  515:
+     1370:  516:  if (show_totals)
+        -:  517:    {
+    #####:  518:      total_textsize += textsize;
+    #####:  519:      total_datasize += datasize;
+    #####:  520:      total_bsssize  += bsssize;
+        -:  521:    }
+        -:  522:
+     1370:  523:  rprint_number (col_width, textsize);
+     1370:  524:  putchar (sep_char);
+     1370:  525:  rprint_number (col_width, datasize);
+     1370:  526:  putchar (sep_char);
+     1370:  527:  rprint_number (col_width, bsssize);
+     1370:  528:  putchar (sep_char);
+        -:  529:
+     1370:  530:  if (selected_output_format == FORMAT_BERKLEY)
+    1370*:  531:    printf (((radix == octal) ? "%7lo\t%7lx" : "%7lu\t%7lx"),
+        -:  532:	    (unsigned long) total, (unsigned long) total);
+        -:  533:  else
+    #####:  534:    rprint_number (col_width, total);
+        -:  535:
+     1370:  536:  putchar (sep_char);
+     1370:  537:  fputs (bfd_get_filename (abfd), stdout);
+        -:  538:
+     1370:  539:  if (abfd->my_archive)
+    #####:  540:    printf (" (ex %s)", bfd_get_filename (abfd->my_archive));
+     1370:  541:}
+        -:  542:
+        -:  543:/* I REALLY miss lexical functions! */
+        -:  544:bfd_size_type svi_total = 0;
+        -:  545:bfd_vma svi_maxvma = 0;
+        -:  546:int svi_namelen = 0;
+        -:  547:int svi_vmalen = 0;
+        -:  548:int svi_sizelen = 0;
+        -:  549:
+        -:  550:static void
+    #####:  551:sysv_internal_sizer (bfd *file ATTRIBUTE_UNUSED, sec_ptr sec,
+        -:  552:		     void *ignore ATTRIBUTE_UNUSED)
+        -:  553:{
+    #####:  554:  flagword flags = bfd_section_flags (sec);
+        -:  555:  /* Exclude sections with no flags set.  This is to omit som spaces.  */
+    #####:  556:  if (flags == 0)
+    #####:  557:    return;
+        -:  558:
+    #####:  559:  if (   ! bfd_is_abs_section (sec)
+    #####:  560:      && ! bfd_is_com_section (sec)
+    #####:  561:      && ! bfd_is_und_section (sec))
+        -:  562:    {
+    #####:  563:      bfd_size_type size = bfd_section_size (sec);
+    #####:  564:      int namelen = strlen (bfd_section_name (sec));
+        -:  565:
+    #####:  566:      if (namelen > svi_namelen)
+    #####:  567:	svi_namelen = namelen;
+        -:  568:
+    #####:  569:      svi_total += size;
+        -:  570:
+    #####:  571:      if (bfd_section_vma (sec) > svi_maxvma)
+    #####:  572:	svi_maxvma = bfd_section_vma (sec);
+        -:  573:    }
+        -:  574:}
+        -:  575:
+        -:  576:static void
+    #####:  577:sysv_one_line (const char *name, bfd_size_type size, bfd_vma vma)
+        -:  578:{
+    #####:  579:  printf ("%-*s   ", svi_namelen, name);
+    #####:  580:  rprint_number (svi_sizelen, size);
+    #####:  581:  printf ("   ");
+    #####:  582:  rprint_number (svi_vmalen, vma);
+    #####:  583:  printf ("\n");
+    #####:  584:}
+        -:  585:
+        -:  586:static void
+    #####:  587:sysv_internal_printer (bfd *file ATTRIBUTE_UNUSED, sec_ptr sec,
+        -:  588:		       void *ignore ATTRIBUTE_UNUSED)
+        -:  589:{
+    #####:  590:  flagword flags = bfd_section_flags (sec);
+    #####:  591:  if (flags == 0)
+    #####:  592:    return;
+        -:  593:
+    #####:  594:  if (   ! bfd_is_abs_section (sec)
+    #####:  595:      && ! bfd_is_com_section (sec)
+    #####:  596:      && ! bfd_is_und_section (sec))
+        -:  597:    {
+    #####:  598:      bfd_size_type size = bfd_section_size (sec);
+        -:  599:
+    #####:  600:      svi_total += size;
+        -:  601:
+    #####:  602:      sysv_one_line (bfd_section_name (sec),
+        -:  603:		     size,
+        -:  604:		     bfd_section_vma (sec));
+        -:  605:    }
+        -:  606:}
+        -:  607:
+        -:  608:static void
+    #####:  609:print_sysv_format (bfd *file)
+        -:  610:{
+        -:  611:  /* Size all of the columns.  */
+    #####:  612:  svi_total = 0;
+    #####:  613:  svi_maxvma = 0;
+    #####:  614:  svi_namelen = 0;
+    #####:  615:  bfd_map_over_sections (file, sysv_internal_sizer, NULL);
+    #####:  616:  if (show_common)
+        -:  617:    {
+    #####:  618:      if (svi_namelen < (int) sizeof ("*COM*") - 1)
+    #####:  619:	svi_namelen = sizeof ("*COM*") - 1;
+    #####:  620:      svi_total += common_size;
+        -:  621:    }
+        -:  622:
+    #####:  623:  svi_vmalen = size_number ((bfd_size_type)svi_maxvma);
+        -:  624:
+    #####:  625:  if ((size_t) svi_vmalen < sizeof ("addr") - 1)
+    #####:  626:    svi_vmalen = sizeof ("addr")-1;
+        -:  627:
+    #####:  628:  svi_sizelen = size_number (svi_total);
+    #####:  629:  if ((size_t) svi_sizelen < sizeof ("size") - 1)
+    #####:  630:    svi_sizelen = sizeof ("size")-1;
+        -:  631:
+    #####:  632:  svi_total = 0;
+    #####:  633:  printf ("%s  ", bfd_get_filename (file));
+        -:  634:
+    #####:  635:  if (file->my_archive)
+    #####:  636:    printf (" (ex %s)", bfd_get_filename (file->my_archive));
+        -:  637:
+    #####:  638:  printf (":\n%-*s   %*s   %*s\n", svi_namelen, "section",
+        -:  639:	  svi_sizelen, "size", svi_vmalen, "addr");
+        -:  640:
+    #####:  641:  bfd_map_over_sections (file, sysv_internal_printer, NULL);
+    #####:  642:  if (show_common)
+        -:  643:    {
+    #####:  644:      svi_total += common_size;
+    #####:  645:      sysv_one_line ("*COM*", common_size, 0);
+        -:  646:    }
+        -:  647:
+    #####:  648:  printf ("%-*s   ", svi_namelen, "Total");
+    #####:  649:  rprint_number (svi_sizelen, svi_total);
+    #####:  650:  printf ("\n\n");
+    #####:  651:}
+        -:  652:
+        -:  653:static void
+     1370:  654:print_sizes (bfd *file)
+        -:  655:{
+     1370:  656:  if (show_common)
+    #####:  657:    calculate_common_size (file);
+     1370:  658:  if (selected_output_format == FORMAT_SYSV)
+    #####:  659:    print_sysv_format (file);
+        -:  660:  else
+     1370:  661:    print_berkeley_or_gnu_format (file);
+     1370:  662:}

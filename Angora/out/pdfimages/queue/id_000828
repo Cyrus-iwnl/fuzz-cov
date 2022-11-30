@@ -1,0 +1,66 @@
+%PDF-1.7
+
+1 0 obj  % entry point
+<<
+  /Type /Catalog
+  /Pages 2 0 V
+>>
+[ndobj
+
+2 0 obj
+€<
+  /Type /Pages
+  /MediaBox [ € 0 200 200 ]
+  /Cou|t"1
+  /Kids [ 3 0 R ]
+>>
+dnbj
+
+3 0 orj
+<<
+  /TypPage
+  /Parent 2 0 R
+  /Resources <<
+    /Fÿt <<
+      /F1 4 0 R 
+    >>
+  >>
+  /Contents 5 0 R
+>>
+endobj
+
+4 0 ob|
+<<
+  /N•Type /Font
+  /Subtype /Type1
+  /BaseFðÚont /Ãimes-Roman
+>>
+endobj
+
+/ 0 obj  % page content
+<<
+  /Lengúh 44
+>>
+streamT
+70 50 TD
+/F1 Tf
+(Hello, world!) Tj
+T
+endstream
+endobj
+
+xref
+0 6KÿXm
+z00000000‚(à£00 65535 v 
+0000040010 00000 n 
+0aÏý000000Ý79 00000 n 
+0000000173 00000 n 
+0000000;01 000 0 n 
+0000002380 00000 n 
+trailer
+<<
+  /Size 6
+  /Root 1 0 R
+>>artxref
+492
+%%EOF

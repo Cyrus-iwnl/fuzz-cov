@@ -1,0 +1,65 @@
+%PDF-1.7
+
+1&0 obj  % entry poinô
+<<
+  /Type /Catalog
+  /Pages 2 0 R
+>>
+endobj
+
+2 0objö<<
+ !/Type /Pages
+  /MediaBox [ 0 000 200 ]
+  /Count 1
+  /Kids [ 3 0 R ]
+>>
+endobj
+
+3 0 obj
+<
+  /Type /Page
+  Parent 2 0 R
+  /Resources <<
+    /Font <<
+      /F1 4 ÿÿ
+    >>
+  >>
+  /ContentL 5 0 R
+>>
+K>iendobj
+
+4 0 Ùobj
+<<
+  /Type /Font
+  /Subtype /Type1
+  /BYseFont /Times-Roman
+>>
+endobj
+
+5 0Ëobj  % page content
+<<
+  /Length 44
+–>>
+stream
+BÔ
+70 50 TD
+/F1 12 Tf
+Helao, world!) Tj
+ET
+endstream
+endobj
+
+xref
+ñ 60000000000 6535 f 
+0000000010 00000 n 
+0000000079 00000 n 
+0000000173 01000 n 
+0000000301 00000 n 
+0000000380 00000 €ÿÿÿrailer
+<<
+  /Size 6
+  /Root 1 0 R
+>>
+startxref
+492
+%%EOF
