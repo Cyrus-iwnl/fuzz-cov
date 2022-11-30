@@ -1,0 +1,198 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info - elf/m32r.h</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">elf</a> - m32r.h<span style="font-size: 80%;"> (source / <a href="m32r.h.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">45</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2022-11-28 23:37:18</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">0</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryLo">0.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /* M32R ELF support for BFD.</a>
+<a name="2"><span class="lineNum">       2 </span>            :    Copyright (C) 1996-2022 Free Software Foundation, Inc.</a>
+<a name="3"><span class="lineNum">       3 </span>            : </a>
+<a name="4"><span class="lineNum">       4 </span>            :    This file is part of BFD, the Binary File Descriptor library.</a>
+<a name="5"><span class="lineNum">       5 </span>            : </a>
+<a name="6"><span class="lineNum">       6 </span>            :    This program is free software; you can redistribute it and/or modify</a>
+<a name="7"><span class="lineNum">       7 </span>            :    it under the terms of the GNU General Public License as published by</a>
+<a name="8"><span class="lineNum">       8 </span>            :    the Free Software Foundation; either version 3 of the License, or</a>
+<a name="9"><span class="lineNum">       9 </span>            :    (at your option) any later version.</a>
+<a name="10"><span class="lineNum">      10 </span>            : </a>
+<a name="11"><span class="lineNum">      11 </span>            :    This program is distributed in the hope that it will be useful,</a>
+<a name="12"><span class="lineNum">      12 </span>            :    but WITHOUT ANY WARRANTY; without even the implied warranty of</a>
+<a name="13"><span class="lineNum">      13 </span>            :    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</a>
+<a name="14"><span class="lineNum">      14 </span>            :    GNU General Public License for more details.</a>
+<a name="15"><span class="lineNum">      15 </span>            : </a>
+<a name="16"><span class="lineNum">      16 </span>            :    You should have received a copy of the GNU General Public License</a>
+<a name="17"><span class="lineNum">      17 </span>            :    along with this program; if not, write to the Free Software Foundation,</a>
+<a name="18"><span class="lineNum">      18 </span>            :    Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1301, USA.  */</a>
+<a name="19"><span class="lineNum">      19 </span>            : </a>
+<a name="20"><span class="lineNum">      20 </span>            : #ifndef _ELF_M32R_H</a>
+<a name="21"><span class="lineNum">      21 </span>            : #define _ELF_M32R_H</a>
+<a name="22"><span class="lineNum">      22 </span>            : </a>
+<a name="23"><span class="lineNum">      23 </span>            : #include &quot;elf/reloc-macros.h&quot;</a>
+<a name="24"><span class="lineNum">      24 </span>            : </a>
+<a name="25"><span class="lineNum">      25 </span>            : /* Relocations.  */</a>
+<a name="26"><span class="lineNum">      26 </span><span class="lineNoCov">          0 : START_RELOC_NUMBERS (elf_m32r_reloc_type)</span></a>
+<a name="27"><span class="lineNum">      27 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_NONE, 0)</span></a>
+<a name="28"><span class="lineNum">      28 </span>            :   /* REL relocations */</a>
+<a name="29"><span class="lineNum">      29 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_16, 1)            /* For backwards compatibility. */</span></a>
+<a name="30"><span class="lineNum">      30 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_32, 2)            /* For backwards compatibility. */</span></a>
+<a name="31"><span class="lineNum">      31 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_24, 3)            /* For backwards compatibility. */</span></a>
+<a name="32"><span class="lineNum">      32 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_10_PCREL, 4)      /* For backwards compatibility. */</span></a>
+<a name="33"><span class="lineNum">      33 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_18_PCREL, 5)      /* For backwards compatibility. */</span></a>
+<a name="34"><span class="lineNum">      34 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_26_PCREL, 6)      /* For backwards compatibility. */</span></a>
+<a name="35"><span class="lineNum">      35 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_HI16_ULO, 7)      /* For backwards compatibility. */</span></a>
+<a name="36"><span class="lineNum">      36 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_HI16_SLO, 8)      /* For backwards compatibility. */</span></a>
+<a name="37"><span class="lineNum">      37 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_LO16, 9)          /* For backwards compatibility. */</span></a>
+<a name="38"><span class="lineNum">      38 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_SDA16, 10)        /* For backwards compatibility. */</span></a>
+<a name="39"><span class="lineNum">      39 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_GNU_VTINHERIT, 11)/* For backwards compatibility. */</span></a>
+<a name="40"><span class="lineNum">      40 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_GNU_VTENTRY, 12)  /* For backwards compatibility. */</span></a>
+<a name="41"><span class="lineNum">      41 </span>            : </a>
+<a name="42"><span class="lineNum">      42 </span>            :   /* RELA relocations */</a>
+<a name="43"><span class="lineNum">      43 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_16_RELA, 33)</span></a>
+<a name="44"><span class="lineNum">      44 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_32_RELA, 34)</span></a>
+<a name="45"><span class="lineNum">      45 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_24_RELA, 35)</span></a>
+<a name="46"><span class="lineNum">      46 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_10_PCREL_RELA, 36)</span></a>
+<a name="47"><span class="lineNum">      47 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_18_PCREL_RELA, 37)</span></a>
+<a name="48"><span class="lineNum">      48 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_26_PCREL_RELA, 38)</span></a>
+<a name="49"><span class="lineNum">      49 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_HI16_ULO_RELA, 39)</span></a>
+<a name="50"><span class="lineNum">      50 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_HI16_SLO_RELA, 40)</span></a>
+<a name="51"><span class="lineNum">      51 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_LO16_RELA, 41)</span></a>
+<a name="52"><span class="lineNum">      52 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_SDA16_RELA, 42)</span></a>
+<a name="53"><span class="lineNum">      53 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_RELA_GNU_VTINHERIT, 43)</span></a>
+<a name="54"><span class="lineNum">      54 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_RELA_GNU_VTENTRY, 44)</span></a>
+<a name="55"><span class="lineNum">      55 </span>            : </a>
+<a name="56"><span class="lineNum">      56 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_REL32, 45)</span></a>
+<a name="57"><span class="lineNum">      57 </span>            :                                                                                 </a>
+<a name="58"><span class="lineNum">      58 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_GOT24, 48)</span></a>
+<a name="59"><span class="lineNum">      59 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_26_PLTREL, 49)</span></a>
+<a name="60"><span class="lineNum">      60 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_COPY, 50)</span></a>
+<a name="61"><span class="lineNum">      61 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_GLOB_DAT, 51)</span></a>
+<a name="62"><span class="lineNum">      62 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_JMP_SLOT, 52)</span></a>
+<a name="63"><span class="lineNum">      63 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_RELATIVE, 53)</span></a>
+<a name="64"><span class="lineNum">      64 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_GOTOFF, 54)</span></a>
+<a name="65"><span class="lineNum">      65 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_GOTPC24, 55)</span></a>
+<a name="66"><span class="lineNum">      66 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_GOT16_HI_ULO, 56)</span></a>
+<a name="67"><span class="lineNum">      67 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_GOT16_HI_SLO, 57)</span></a>
+<a name="68"><span class="lineNum">      68 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_GOT16_LO, 58)</span></a>
+<a name="69"><span class="lineNum">      69 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_GOTPC_HI_ULO, 59)</span></a>
+<a name="70"><span class="lineNum">      70 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_GOTPC_HI_SLO, 60)</span></a>
+<a name="71"><span class="lineNum">      71 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_GOTPC_LO, 61)</span></a>
+<a name="72"><span class="lineNum">      72 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_GOTOFF_HI_ULO, 62)</span></a>
+<a name="73"><span class="lineNum">      73 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_GOTOFF_HI_SLO, 63)</span></a>
+<a name="74"><span class="lineNum">      74 </span><span class="lineNoCov">          0 :   RELOC_NUMBER (R_M32R_GOTOFF_LO, 64)</span></a>
+<a name="75"><span class="lineNum">      75 </span>            : </a>
+<a name="76"><span class="lineNum">      76 </span><span class="lineNoCov">          0 : END_RELOC_NUMBERS (R_M32R_max)</span></a>
+<a name="77"><span class="lineNum">      77 </span>            : </a>
+<a name="78"><span class="lineNum">      78 </span>            : /* Processor specific section indices.  These sections do not actually</a>
+<a name="79"><span class="lineNum">      79 </span>            :    exist.  Symbols with a st_shndx field corresponding to one of these</a>
+<a name="80"><span class="lineNum">      80 </span>            :    values have a special meaning.  */</a>
+<a name="81"><span class="lineNum">      81 </span>            : </a>
+<a name="82"><span class="lineNum">      82 </span>            : /* Small common symbol.  */</a>
+<a name="83"><span class="lineNum">      83 </span>            : #define SHN_M32R_SCOMMON        SHN_LORESERVE</a>
+<a name="84"><span class="lineNum">      84 </span>            : </a>
+<a name="85"><span class="lineNum">      85 </span>            : /* Processor specific section flags.  */</a>
+<a name="86"><span class="lineNum">      86 </span>            : </a>
+<a name="87"><span class="lineNum">      87 </span>            : /* This section contains sufficient relocs to be relaxed.</a>
+<a name="88"><span class="lineNum">      88 </span>            :    When relaxing, even relocs of branch instructions the assembler could</a>
+<a name="89"><span class="lineNum">      89 </span>            :    complete must be present because relaxing may cause the branch target to</a>
+<a name="90"><span class="lineNum">      90 </span>            :    move.  */</a>
+<a name="91"><span class="lineNum">      91 </span>            : #define SHF_M32R_CAN_RELAX      0x10000000</a>
+<a name="92"><span class="lineNum">      92 </span>            : </a>
+<a name="93"><span class="lineNum">      93 </span>            : /* Processor specific flags for the ELF header e_flags field.  */</a>
+<a name="94"><span class="lineNum">      94 </span>            : </a>
+<a name="95"><span class="lineNum">      95 </span>            : /* Two bit m32r architecture field.  */</a>
+<a name="96"><span class="lineNum">      96 </span>            : #define EF_M32R_ARCH            0x30000000</a>
+<a name="97"><span class="lineNum">      97 </span>            : </a>
+<a name="98"><span class="lineNum">      98 </span>            : /* m32r code.  */</a>
+<a name="99"><span class="lineNum">      99 </span>            : #define E_M32R_ARCH             0x00000000</a>
+<a name="100"><span class="lineNum">     100 </span>            : /* m32rx code.  */</a>
+<a name="101"><span class="lineNum">     101 </span>            : #define E_M32RX_ARCH            0x10000000</a>
+<a name="102"><span class="lineNum">     102 </span>            : /* m32r2 code.  */</a>
+<a name="103"><span class="lineNum">     103 </span>            : #define E_M32R2_ARCH            0x20000000</a>
+<a name="104"><span class="lineNum">     104 </span>            : </a>
+<a name="105"><span class="lineNum">     105 </span>            : /* 12 bit m32r new instructions field.  */</a>
+<a name="106"><span class="lineNum">     106 </span>            : #define EF_M32R_INST            0x0FFF0000</a>
+<a name="107"><span class="lineNum">     107 </span>            : /* Parallel instructions.  */</a>
+<a name="108"><span class="lineNum">     108 </span>            : #define E_M32R_HAS_PARALLEL     0x00010000</a>
+<a name="109"><span class="lineNum">     109 </span>            : /* Hidden instructions for m32rx:</a>
+<a name="110"><span class="lineNum">     110 </span>            :    jc, jnc, macwhi-a, macwlo-a, mulwhi-a, mulwlo-a, sth+, shb+, sat, pcmpbz,</a>
+<a name="111"><span class="lineNum">     111 </span>            :    sc, snc.  */</a>
+<a name="112"><span class="lineNum">     112 </span>            : #define E_M32R_HAS_HIDDEN_INST  0x00020000</a>
+<a name="113"><span class="lineNum">     113 </span>            : /* New bit instructions:</a>
+<a name="114"><span class="lineNum">     114 </span>            :    clrpsw, setpsw, bset, bclr, btst.  */</a>
+<a name="115"><span class="lineNum">     115 </span>            : #define E_M32R_HAS_BIT_INST     0x00040000</a>
+<a name="116"><span class="lineNum">     116 </span>            : /* Floating point instructions.  */</a>
+<a name="117"><span class="lineNum">     117 </span>            : #define E_M32R_HAS_FLOAT_INST   0x00080000</a>
+<a name="118"><span class="lineNum">     118 </span>            : </a>
+<a name="119"><span class="lineNum">     119 </span>            : /* 4 bit m32r ignore to check field.  */</a>
+<a name="120"><span class="lineNum">     120 </span>            : #define EF_M32R_IGNORE          0x0000000F</a>
+<a name="121"><span class="lineNum">     121 </span>            : </a>
+<a name="122"><span class="lineNum">     122 </span>            : #endif</a>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.14</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

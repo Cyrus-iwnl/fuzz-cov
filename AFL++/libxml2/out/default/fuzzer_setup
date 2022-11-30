@@ -1,0 +1,5 @@
+# environment variables:
+AFL_USE_ASAN=1
+AFL_USE_UBSAN=1
+# command line:
+'afl-fuzz' '-i' 'fuzz/in' '-o' 'fuzz/out' '-m' 'none' '-t' '999999' './xmllint' '--valid' '--recover' '@@'
