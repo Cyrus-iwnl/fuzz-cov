@@ -1,0 +1,264 @@
+        -:    0:Source:cxxfilt.c
+        -:    0:Graph:cxxfilt.gcno
+        -:    0:Data:cxxfilt.gcda
+        -:    0:Runs:1
+        -:    1:/* Demangler for GNU C++ - main program
+        -:    2:   Copyright (C) 1989-2022 Free Software Foundation, Inc.
+        -:    3:   Written by James Clark (jjc@jclark.uucp)
+        -:    4:   Rewritten by Fred Fish (fnf@cygnus.com) for ARM and Lucid demangling
+        -:    5:   Modified by Satish Pai (pai@apollo.hp.com) for HP demangling
+        -:    6:
+        -:    7:   This file is part of GNU Binutils.
+        -:    8:
+        -:    9:   This program is free software; you can redistribute it and/or modify
+        -:   10:   it under the terms of the GNU General Public License as published by
+        -:   11:   the Free Software Foundation; either version 3 of the License, or (at
+        -:   12:   your option) any later version.
+        -:   13:
+        -:   14:   This program is distributed in the hope that it will be useful,
+        -:   15:   but WITHOUT ANY WARRANTY; without even the implied warranty of
+        -:   16:   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        -:   17:   GNU General Public License for more details.
+        -:   18:
+        -:   19:   You should have received a copy of the GNU General Public License
+        -:   20:   along with GCC; see the file COPYING.  If not, write to the Free
+        -:   21:   Software Foundation, 51 Franklin Street - Fifth Floor, Boston, MA
+        -:   22:   02110-1301, USA.  */
+        -:   23:
+        -:   24:#include "sysdep.h"
+        -:   25:#include "bfd.h"
+        -:   26:#include "libiberty.h"
+        -:   27:#include "demangle.h"
+        -:   28:#include "getopt.h"
+        -:   29:#include "safe-ctype.h"
+        -:   30:#include "bucomm.h"
+        -:   31:
+        -:   32:static int flags = DMGL_PARAMS | DMGL_ANSI | DMGL_VERBOSE;
+        -:   33:static int strip_underscore = TARGET_PREPENDS_UNDERSCORE;
+        -:   34:
+        -:   35:static const struct option long_options[] =
+        -:   36:{
+        -:   37:  {"strip-underscore", no_argument, NULL, '_'},
+        -:   38:  {"format", required_argument, NULL, 's'},
+        -:   39:  {"help", no_argument, NULL, 'h'},
+        -:   40:  {"no-params", no_argument, NULL, 'p'},
+        -:   41:  {"no-strip-underscores", no_argument, NULL, 'n'},
+        -:   42:  {"no-verbose", no_argument, NULL, 'i'},
+        -:   43:  {"types", no_argument, NULL, 't'},
+        -:   44:  {"version", no_argument, NULL, 'v'},
+        -:   45:  {"recurse-limit", no_argument, NULL, 'R'},
+        -:   46:  {"recursion-limit", no_argument, NULL, 'R'},
+        -:   47:  {"no-recurse-limit", no_argument, NULL, 'r'},
+        -:   48:  {"no-recursion-limit", no_argument, NULL, 'r'},
+        -:   49:  {NULL, no_argument, NULL, 0}
+        -:   50:};
+        -:   51:
+        -:   52:static void
+     1847:   53:demangle_it (char *mangled_name)
+        -:   54:{
+        -:   55:  char *result;
+     1847:   56:  unsigned int skip_first = 0;
+        -:   57:
+        -:   58:  /* _ and $ are sometimes found at the start of function names
+        -:   59:     in assembler sources in order to distinguish them from other
+        -:   60:     names (eg register names).  So skip them here.  */
+    1847*:   61:  if (mangled_name[0] == '.' || mangled_name[0] == '$')
+     1847:   62:    ++skip_first;
+    1847*:   63:  if (strip_underscore && mangled_name[skip_first] == '_')
+    #####:   64:    ++skip_first;
+        -:   65:
+     1847:   66:  result = cplus_demangle (mangled_name + skip_first, flags);
+        -:   67:
+     1847:   68:  if (result == NULL)
+     1847:   69:    printf ("%s", mangled_name);
+        -:   70:  else
+        -:   71:    {
+    #####:   72:      if (mangled_name[0] == '.')
+    #####:   73:	putchar ('.');
+    #####:   74:      printf ("%s", result);
+    #####:   75:      free (result);
+        -:   76:    }
+     1847:   77:}
+        -:   78:
+        -:   79:static void
+    #####:   80:print_demangler_list (FILE *stream)
+        -:   81:{
+        -:   82:  const struct demangler_engine *demangler;
+        -:   83:
+    #####:   84:  fprintf (stream, "{%s", libiberty_demanglers->demangling_style_name);
+        -:   85:
+    #####:   86:  for (demangler = libiberty_demanglers + 1;
+    #####:   87:       demangler->demangling_style != unknown_demangling;
+    #####:   88:       ++demangler)
+    #####:   89:    fprintf (stream, ",%s", demangler->demangling_style_name);
+        -:   90:
+    #####:   91:  fprintf (stream, "}");
+    #####:   92:}
+        -:   93:
+        -:   94:ATTRIBUTE_NORETURN static void
+    #####:   95:usage (FILE *stream, int status)
+        -:   96:{
+    #####:   97:  fprintf (stream, "\
+        -:   98:Usage: %s [options] [mangled names]\n", program_name);
+    #####:   99:  fprintf (stream, "\
+        -:  100:Options are:\n\
+        -:  101:  [-_|--strip-underscore]     Ignore first leading underscore%s\n",
+        -:  102:	   TARGET_PREPENDS_UNDERSCORE ? " (default)" : "");
+    #####:  103:  fprintf (stream, "\
+        -:  104:  [-n|--no-strip-underscore]  Do not ignore a leading underscore%s\n",
+        -:  105:	   TARGET_PREPENDS_UNDERSCORE ? "" : " (default)");
+    #####:  106:  fprintf (stream, "\
+        -:  107:  [-p|--no-params]            Do not display function arguments\n\
+        -:  108:  [-i|--no-verbose]           Do not show implementation details (if any)\n\
+        -:  109:  [-R|--recurse-limit]        Enable a limit on recursion whilst demangling.  [Default]\n\
+        -:  110:  ]-r|--no-recurse-limit]     Disable a limit on recursion whilst demangling\n\
+        -:  111:  [-t|--types]                Also attempt to demangle type encodings\n\
+        -:  112:  [-s|--format ");
+    #####:  113:  print_demangler_list (stream);
+    #####:  114:  fprintf (stream, "]\n");
+        -:  115:
+    #####:  116:  fprintf (stream, "\
+        -:  117:  [@<file>]                   Read extra options from <file>\n\
+        -:  118:  [-h|--help]                 Display this information\n\
+        -:  119:  [-v|--version]              Show the version information\n\
+        -:  120:Demangled names are displayed to stdout.\n\
+        -:  121:If a name cannot be demangled it is just echoed to stdout.\n\
+        -:  122:If no names are provided on the command line, stdin is read.\n");
+    #####:  123:  if (REPORT_BUGS_TO[0] && status == 0)
+    #####:  124:    fprintf (stream, _("Report bugs to %s.\n"), REPORT_BUGS_TO);
+    #####:  125:  exit (status);
+        -:  126:}
+        -:  127:
+        -:  128:/* Return the string of non-alnum characters that may occur
+        -:  129:   as a valid symbol component, in the standard assembler symbol
+        -:  130:   syntax.  */
+        -:  131:
+        -:  132:static const char *
+    #####:  133:standard_symbol_characters (void)
+        -:  134:{
+    #####:  135:  return "_$.";
+        -:  136:}
+        -:  137:
+        -:  138:extern int main (int, char **);
+        -:  139:
+        -:  140:int
+        1:  141:main (int argc, char **argv)
+        -:  142:{
+        -:  143:  int c;
+        -:  144:  const char *valid_symbols;
+        1:  145:  enum demangling_styles style = auto_demangling;
+        -:  146:
+        1:  147:  program_name = argv[0];
+        1:  148:  xmalloc_set_program_name (program_name);
+        1:  149:  bfd_set_error_program_name (program_name);
+        -:  150:
+        1:  151:  expandargv (&argc, &argv);
+        -:  152:
+        2:  153:  while ((c = getopt_long (argc, argv, "_hinprRs:tv", long_options, (int *) 0)) != EOF)
+        -:  154:    {
+    #####:  155:      switch (c)
+        -:  156:	{
+    #####:  157:	case '?':
+    #####:  158:	  usage (stderr, 1);
+        -:  159:	  break;
+    #####:  160:	case 'h':
+    #####:  161:	  usage (stdout, 0);
+    #####:  162:	case 'n':
+    #####:  163:	  strip_underscore = 0;
+    #####:  164:	  break;
+    #####:  165:	case 'p':
+    #####:  166:	  flags &= ~ DMGL_PARAMS;
+    #####:  167:	  break;
+    #####:  168:	case 'r':
+    #####:  169:	  flags |= DMGL_NO_RECURSE_LIMIT;
+    #####:  170:	  break;
+    #####:  171:	case 'R':
+    #####:  172:	  flags &= ~ DMGL_NO_RECURSE_LIMIT;
+    #####:  173:	  break;
+    #####:  174:	case 't':
+    #####:  175:	  flags |= DMGL_TYPES;
+    #####:  176:	  break;
+    #####:  177:	case 'i':
+    #####:  178:	  flags &= ~ DMGL_VERBOSE;
+    #####:  179:	  break;
+    #####:  180:	case 'v':
+    #####:  181:	  print_version ("c++filt");
+    #####:  182:	  return 0;
+    #####:  183:	case '_':
+    #####:  184:	  strip_underscore = 1;
+    #####:  185:	  break;
+    #####:  186:	case 's':
+    #####:  187:	  style = cplus_demangle_name_to_style (optarg);
+    #####:  188:	  if (style == unknown_demangling)
+        -:  189:	    {
+    #####:  190:	      fprintf (stderr, "%s: unknown demangling style `%s'\n",
+        -:  191:		       program_name, optarg);
+    #####:  192:	      return 1;
+        -:  193:	    }
+    #####:  194:	  cplus_demangle_set_style (style);
+    #####:  195:	  break;
+        -:  196:	}
+        1:  197:    }
+        -:  198:
+        1:  199:  if (optind < argc)
+        -:  200:    {
+     1848:  201:      for ( ; optind < argc; optind++)
+        -:  202:	{
+     1847:  203:	  demangle_it (argv[optind]);
+     1847:  204:	  putchar ('\n');
+        -:  205:	}
+        -:  206:
+        1:  207:      return 0;
+        -:  208:    }
+        -:  209:
+    #####:  210:  switch (current_demangling_style)
+        -:  211:    {
+    #####:  212:    case auto_demangling:
+        -:  213:    case gnu_v3_demangling:
+        -:  214:    case java_demangling:
+        -:  215:    case gnat_demangling:
+        -:  216:    case dlang_demangling:
+        -:  217:    case rust_demangling:
+    #####:  218:       valid_symbols = standard_symbol_characters ();
+    #####:  219:      break;
+    #####:  220:    default:
+        -:  221:      /* Folks should explicitly indicate the appropriate alphabet for
+        -:  222:	 each demangling.  Providing a default would allow the
+        -:  223:	 question to go unconsidered.  */
+    #####:  224:      fatal ("Internal error: no symbol alphabet for current style");
+        -:  225:    }
+        -:  226:
+        -:  227:  for (;;)
+    #####:  228:    {
+        -:  229:      static char mbuffer[32767];
+    #####:  230:      unsigned i = 0;
+        -:  231:
+    #####:  232:      c = getchar ();
+        -:  233:      /* Try to read a mangled name.  */
+    #####:  234:      while (c != EOF && (ISALNUM (c) || strchr (valid_symbols, c)))
+        -:  235:	{
+    #####:  236:	  if (i >= sizeof (mbuffer) - 1)
+    #####:  237:	    break;
+    #####:  238:	  mbuffer[i++] = c;
+    #####:  239:	  c = getchar ();
+        -:  240:	}
+        -:  241:
+    #####:  242:      if (i > 0)
+        -:  243:	{
+    #####:  244:	  mbuffer[i] = 0;
+    #####:  245:	  demangle_it (mbuffer);
+        -:  246:	}
+        -:  247:
+    #####:  248:      if (c == EOF)
+    #####:  249:	break;
+        -:  250:
+        -:  251:      /* Echo the whitespace characters so that the output looks
+        -:  252:	 like the input, only with the mangled names demangled.  */
+    #####:  253:      putchar (c);
+    #####:  254:      if (c == '\n')
+    #####:  255:	fflush (stdout);
+        -:  256:    }
+        -:  257:
+    #####:  258:  fflush (stdout);
+    #####:  259:  return 0;
+        -:  260:}
