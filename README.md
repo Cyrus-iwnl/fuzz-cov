@@ -2,12 +2,6 @@
 
 **题目：** 基于覆盖率的模糊器评估
 
-## 作业仓库
-
-github：https://github.com/cyrus-iwnl/fuzz-cov
-
-gitlink：https://www.gitlink.org.cn/Cyrus/fuzz-cov
-
 ## 项目结构
 
 + AFL，AFL++，Angora三个目录分别是三个fuzzer的项目，项目的详细结构可以看对应fuzzer目录下的README。
